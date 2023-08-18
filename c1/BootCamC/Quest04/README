@@ -1,0 +1,22 @@
+# Welcome to Quest04
+***
+
+## Task
+The project consisted of writing user defined function resolving some problems
+## Description
+User defines and writes predefined function to cassry out certain tasks similar to c predefined functions 
+
+## Installation
+No special installation required
+
+## Usage
+All you need is a compiler in my case gcc and to run the generated file to have your results
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>

@@ -1,0 +1,23 @@
+# Welcome to Quest05
+Welcome to Quest O5
+
+## Task
+What is the problem? And where is the challenge? Carry out commmand line exercises such as counting the number of regular files
+
+## Description
+How have you solved the problem? By witing linux commands that display various outputs
+
+## Installation
+How to install your project? npm install? make? make re? No special installations made
+
+## Usage
+How does it work? when in a directory of folder you can type in the command for what you wish to display
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>

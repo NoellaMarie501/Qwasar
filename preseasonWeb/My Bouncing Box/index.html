@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html style='background-color: black'>
+  <div id="my_bouncing_box" style= "background-color: blue; border-radius: 3px; position: absolute; left: 0px; top: 0px; min-width: 100px; min-height: 100px; text-align: center; font-weight: bold; color: #999;" >Not loaded</div>
+  <script type="text/javascript">
+
+
+    // YOUR CODE
+    var element =document.getElementById("my_bouncing_box").innerHTML = "Noella";
+
+            var move_top = 0;
+            var move_left= 0;
+            const id = setInterval(move, 5);
+            
+
+        function move(){
+
+                    move_top++;
+                    move_left++; 
+           
+                 if(move_top == screen.height || move_left == screen.width){
+                   
+                    move_top--;
+                    move_left--;
+                 }
+               
+                    document.getElementById("my_bouncing_box").style.top = move_top + 'px';
+                    document.getElementById("my_bouncing_box").style.left = move_left + 'px';
+                console.log("screen.width:", screen.width, "screen.hieght: ", screen.height);
+                
+
+        }
+  </script>
+</html>

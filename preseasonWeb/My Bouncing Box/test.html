@@ -1,0 +1,30 @@
+<html style='background-color: black'>
+  <div id="my_bouncing_box" style= "background-color: blue; border-radius: 3px; position: absolute; left: 0px; top: 0px; min-width: 100px; min-height: 100px; text-align: center; font-weight: bold; color: #999;" >Not loaded</div>
+  <script type="text/javascript">
+    const box = document.getElementById("my_bouncing_box");
+    const speed = 0.1; // adjust this to change the speed of the box
+
+    let x = 0;
+    let y = 0;
+    let dx = speed;
+    let dy = speed;
+
+    setInterval(() => {
+      x += dx;
+      y += dy;
+
+      // check if the box hits the right or left border
+      if (x + box.offsetWidth >= window.innerWidth || x <= 0) {
+        dx = -dx;
+      }
+
+      // check if the box hits the top or bottom border
+      if (y + box.offsetHeight >= window.innerHeight || y <= 0) {
+        dy = -dy;
+      }
+
+      box.style.left = x + "px";
+      box.style.top = y + "px";
+    }, 5);
+  </script>
+</html>

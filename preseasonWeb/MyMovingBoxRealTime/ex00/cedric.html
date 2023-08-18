@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="my_box_realtime" style= "background-color: red; position: absolute; right: 70; bottom: 70; min-width: 100px; min-height: 100px"></div>
+    <script type="text/javascript">
+
+    var counter = 1;
+      const box = document.getElementById("my_box_realtime");
+      const destinationX = window.innerWidth- 70 - box.offsetWidth;
+      const destinationY = window.innerHeight - 70 - box.offsetHeight;
+      const totalSteps = 35 / 0.5;
+      const stepX = (box.offsetLeft - destinationX) / totalSteps;
+      const stepY = (destinationY - box.offsetTop) / totalSteps;
+
+      function moveBox() {
+        
+        console.log('counter',counter)
+        if(counter === totalSteps){
+            clearInterval(intervalId);
+            return;
+        }
+            
+
+        box.style.left = box.offsetLeft  - stepX + "px";
+        box.style.top = box.offsetTop + stepY + "px";
+        counter++
+      }
+
+      const intervalId = setInterval(moveBox, 500);
+       
+    </script>
+</body>
+</html>

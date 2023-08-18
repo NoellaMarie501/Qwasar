@@ -1,0 +1,23 @@
+# Welcome to My Levenshtein
+My Levenshtein is a function that takes two strings and ompares them reurning their difference in a numeric value
+
+## Task
+The problem was to compare two strings and give their differences in numbers 
+
+## Description
+I created a function that takes the two strings as arguments and then creates an array of each string and then coöpares the values of the two arrays if they are equal
+
+## Installation
+No special installations required for the project implimentation apart from nodejs in order to run the javascript code
+
+## Usage
+The usage is very simple you just need to call the funtion while passing the two string parameters and you will get an output result in numeric value
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+The core team was composed mainly of CHEO Marie Noel
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>

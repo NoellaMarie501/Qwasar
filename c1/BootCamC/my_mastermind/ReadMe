@@ -1,0 +1,24 @@
+# Welcome to My Mastermind
+***
+
+## Task
+What is the problem? And where is the challenge? Write a Game in c caled My Mastermind
+
+## Description
+How have you solved the problem? The user should input four digits in the command line while trying to guess the code generated or entered using a -c and -t flag
+
+## Installation
+How to install your project? npm install? make? make re?
+No special installations made for this program
+
+## Usage
+How does it work? The user tries the input n number of times by default 10 and if it matches he won the game if not it displays the number of well placed inputs and number of misplaced inputs
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>

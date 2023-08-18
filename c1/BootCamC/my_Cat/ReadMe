@@ -1,0 +1,23 @@
+# Welcome to My Cat
+***
+
+## Task
+What is the problem? And where is the challenge? Write a program that simulates the cat command in c
+
+## Description
+How have you solved the problem?The program should be in c and the program prints the content of a given file from the input parametes argv
+
+## Installation
+How to install your project? npm install? make? make re? No special installations required 
+
+## Usage
+How does it work?You write the name of the file in parametes after writting the executable file. this should print the content of the file
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>

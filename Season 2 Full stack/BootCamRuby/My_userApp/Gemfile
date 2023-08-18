@@ -1,0 +1,2 @@
+gem 'sinatra-session'
+gem 'sinatra-flash'

@@ -1,0 +1,25 @@
+# Welcome to My Ngram
+***
+
+## Task
+- The project consited in making a program that collects the strings as parameters from the command line and display each character of the different strings and their number of occurences .  
+
+## Description
+- The file was to be compiled using the following command that checks for errors that the default won't check "gcc -g -Wall -Wextra -Werror -o my_ngram my_ngram.c
+"
+
+## Installation
+TODO - No special installations made just a make file that was created to run the compilation command and also having to include clean and fclean rules
+
+## Usage
+TODO - after creating the make file you have to put in the different compilatin commands and the run the compilation simply by using make
+- Later you are required to execute the file while passing the parameters in the command line.
+```
+./my_project argument1 argument2
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>
