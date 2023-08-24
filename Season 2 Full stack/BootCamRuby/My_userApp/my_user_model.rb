@@ -14,7 +14,7 @@ class User
       @age = age
       @password = password
       @email = email
-      create_table #calling the create_table method to create table if not exist
+      User.create_table() #calling the create_table method to create table if not exist
       #@db.close
   end
 
@@ -24,9 +24,10 @@ class User
     if(@db.last_insert_row_id)
         puts "User created"
         id = @db.last_insert_row_id
-        user = findId(id) #retriving the last inserted row to find out if user was created successfully  
+        new_user = findId(id) #retriving the last inserted row to find out if user was created successfully  
       #  @db.close
-        return user.reject { |key, value| key == :user_password }#exempting password
+        user = User.new(new_user[:firstname], new_user[:lastname], new_user[:age],'', new_user[:email])
+        return user
     else
     #  @db.close
       return 0
