@@ -1,147 +1,191 @@
 require 'csv'
+options = { col_sep: ',', quote_char: '"' }
 
 class MySqliteRequest
-    def initialize
-        @table_name = nil
-        @columns = []
-        @where_conditions = []
-        @join_conditions = []
-        @order_by = nil
-        @order_direction = nil
-        @insert_table_name = nil
-        @insert_data = {}
-        @update_table_name = nil
-        @update_data = {}
-        @delete_conditions = []
+
+  def initialize
+    @table_name = nil
+    @columns = []
+    @where_conditions = []
+    @join_condition = nil
+    @order_by = nil
+    @order_direction = nil
+    @insert_data = {}
+    @update_data = {}
+    @delete_conditions = []
+    @update_conditions = []
+    @select = nil
+  end
+
+  def from(table_name)
+    @table_name = table_name
+     #checking if no table name specified
+    if @table_name.nil?
+      raise "No table specified"
     end
-  
-    def from(table_name)
+    self
+  end
+
+  def select(*columns)
+    @columns = columns
+    @select = true
+    self
+  end
+
+  def where(column_name, value)
+    @where_conditions << { column_name: column_name, value: value }
+    self
+  end
+
+  def join(column_on_db_a, filename_db_b, column_on_db_b)
+    @join_condition = { column_on_db_a: column_on_db_a, filename_db_b: filename_db_b, column_on_db_b: column_on_db_b }
+    self
+  end
+
+  def order(order_by, order_direction = nil)
+    @order_by = order_by
+    @order_direction = order_direction
+    self
+  end
+
+  def insert(table_name)
+      #checking if no table name specified
       @table_name = table_name
-      return self
-    end
-  
-    def select(*columns)
-      @columns = columns
+      if @table_name.nil?
+        raise "No table specified"
+      end
       self
+  end
+
+  def values(data)
+    @insert_data = data
+    self
+  end
+
+  def update(table_name)
+    @table_name = table_name
+    @update_conditions = @where_conditions
+    self
+  end
+
+  def set(data)
+    @update_data = data
+    puts @update_data.class
+    self
+  end
+
+  def delete
+    @delete_conditions = @where_conditions
+    self
+  end
+
+  # def where_delete(column_name, value)
+  #   @delete_conditions << { column_name: column_name, value: value }
+  #   self
+  # end
+
+  def run
+   #reading file spcifying that it contains headers
+   result = CSV.read(@table_name, headers: true)
+    
+    #checking if where clause specified if not choose all columns
+    if @columns.empty? && @select
+      puts "columns empty"
+      @columns = result.headers
     end
-  
-    def where(column_name, value)
-      @where_conditions << { column_name: column_name, value: value }
-      return self
-      # Code for the where method here
+
+    #checking for where condition specified
+    if @where_conditions.any? &&  !@columns.empty?
+      result = result.select do |row|
+        @where_conditions.all? { |condition| row[condition[:column_name]] == condition[:value] }
+      end
+      result = result.map { |row| row.select { |k, v| @columns.include?(k)} }
     end
-  
-    def join(column_on_db_a, filename_db_b, column_on_db_b)
-      @join_conditions << { column_on_db_a: column_on_db_a, filename_db_b: filename_db_b, column_on_db_b: column_on_db_b }
-      return self
-      # Code for the join method here
+
+  #  #Handling or displaying only specified columns from the selected rows using the where condition
+  #   if @columns
+  #     result = result.map { |row| row.select { |k, v| @columns.include?(k)} }
+  #     #puts result
+  #   end
+
+    #checking for a join condition
+    if @join_condition
+          actual = nil
+          matching_row = nil
+          join_table = CSV.read(@join_condition[:filename_db_b], headers: true)
+          join_table.each { |join_row|
+              result.each do |row|
+                if (join_row[@join_condition[:column_on_db_b]] == row[@join_condition[:column_on_db_a]] )
+                  matching_row = join_row.to_h 
+                  actual = row.to_h
+                  break
+                end
+              end
+               break if matching_row  
+          }
+          result = matching_row.merge(actual)
+          # result = result.each do |noel|
+          #   noel.to_a
+          # end
+
     end
-  
-    def order(order, column_name)
-      @order_by = column_name
-      @order_direction = order
-      self
-      # Code for the order method here
+
+    #ordering the columns to be displayed if order clause is specified
+    if @order_by
+      #puts @order_by
+      result = result.sort_by { |row| row[@order_by.to_i] } if @order_direction == "asc"
+      result = result.sort_by { |row| row[@order_by.to_i] }.reverse if @order_direction == "desc"
     end
-  
-    def insert(table_name)
-      @table_name = table_name
-      self
-      # Code for the insert method here
-    end
-  
-    def values(data)
-      @insert_data = data
+   
+   
+    #inserting data at the end of the table
+    if @table_name && @insert_data.any?
+      #puts @table_name, @insert_data
       CSV.open(@table_name, 'a') do |csv|
         csv << @insert_data.values
       end
     end
-  
-    def update(table_name)
-      @update_table_name = table_name
-      self
-    end
-  
-    def set(data)
-      @update_data = data
-      CSV.open(@update_table_name, 'r+') do |csv|#opening dile in read and wite mode
-        #column = data.keys.first
-        headers = csv.first
-        @update_data.each do |key, value|
-          index = headers.index(key)
-          csv.each do |row|
-            if row[0] != headers && match_conditions?(row)#checking if the value at row index matches where condition
-              row[index] = value
-            end
-          end
-        end
-        csv.rewind#place the file pointer to the beginning of the file since it is initially at the bottom when using open 
-        csv.write(headers)#rewrite all the headers of the file into the file again to ensure it is updated succesfully
-        csv.each do |row|# rewrite the rows of the file 
-          csv.write(row)
-        end
+
+    #Updating tables using the where conditions 
+    if @table_name && @update_data.any?
+      #puts @table_name, @update_data, @update_conditions
+      result.each do |row|
+        if @update_conditions.all? { |condition|  
+          row[condition[:column_name]] == condition[:value] }
+          @update_data.each { |key, value| 
+            row[key] = value
+          }
+        end 
+        row
       end
-    end
-  
-    def delete
-      CSV.open(@table_name, 'r+') do |csv|
-        headers = csv.first
-        csv.rewind
-        csv.write(headers)
-        csv.each do |row|
-          if row[0] != headers && match_conditions?(row)
-            csv.delete(row)
-          end
-        end
+
+      #rewritting the headers and rows to ensure that data was updated and current data is not stale
+      CSV.open(@table_name, 'w') do |csv|
+        csv << result.headers
+        result.each { |row| csv << row }
       end
-      self
     end
 
-    def match_conditions?(row)
-      @where_conditions.each do |condition|
-        index = headers.index(condition[:column_name])
-        if row[index] != condition[:value]
-          return false
-        end
+    #deleting tables using the where conditions
+    if @delete_conditions.any? 
+      result.delete_if { |row|  
+        @delete_conditions.all? { |condition| row[condition[:column_name]] == condition[:value] }
+      }
+     
+      #rewritting the headers and rows to ensure that data was deleted and current data is not stale
+      CSV.open(@table_name, 'w') do |csv|
+        csv << result.headers
+        result.each { |row| csv << row }
       end
-      true
     end
-  
-    def run
-      result = nil
-    
-      if @table_name.nil?
-        raise "No table specified"
-      end
-    
-      if @columns.empty?
-        @columns = ["*"]
-      end
-    
-      result = from(@table_name)
-      result = select(*@columns)
-      result = where(@where_conditions[:column_name], @where_conditions[:value]) if @where_conditions.any?
-      result = join(@join_conditions[:column_on_db_a],@join_conditions[:column_name],@join_conditions[:column_on_db_b]) if @join_conditions.any?
-      result = order(@order_direction, @order_by) if @order_by
-      result = insert(@insert_table_name) if @insert_table_name
-      result = values(@insert_data) if @insert_data.any?
-      result = update(@update_table_name) if @update_table_name
-      result = set(@update_data) if @update_data.any?
-      result = delete if @delete_conditions.any?
-    
-     puts result
-    end    
-  end
-  
-
+    #puts result
+  puts result.map(&:to_h).inspect
+   end
+end
 
 
 request = MySqliteRequest.new()
-# request = request.insert(data.csv)
-# request = request.values
-request = request.from('data.csv')
-request = request.select("name")
-request = request.where('year_start', '2018')
-request.run
-
-  
+#request = request.from('data.csv').select.where('position', 'G').order("name","desc").run
+#request = request.update("data.csv").set("position" => "H", "year_end" => "1234").where("name","John Abramovic").run
+#request = request.from('data.csv').delete.where("name","John Abramovic").run
+#request = request.from('data.csv').select("name").join("year_start","data1.csv","year_end").run

@@ -87,7 +87,7 @@ class MySqliteRequest
   def run
    #reading file spcifying that it contains headers
    result = CSV.read(@table_name, headers: true)
-    
+  
     #checking if where clause specified if not choose all columns
     if @columns.empty? && @select
       puts "columns empty"
@@ -100,6 +100,7 @@ class MySqliteRequest
         @where_conditions.all? { |condition| row[condition[:column_name]] == condition[:value] }
       end
       result = result.map { |row| row.select { |k, v| @columns.include?(k)} }
+      
     end
 
   #  #Handling or displaying only specified columns from the selected rows using the where condition
@@ -123,8 +124,11 @@ class MySqliteRequest
               end
                break if matching_row  
           }
-          result = matching_row.merge(actual).to_a
-          puts result
+          result = matching_row.merge(actual)
+          # result = result.each do |noel|
+          #   noel.to_a
+          # end
+
     end
 
     #ordering the columns to be displayed if order clause is specified
@@ -175,14 +179,14 @@ class MySqliteRequest
         result.each { |row| csv << row }
       end
     end
-    puts result
-  #puts result.map(&:to_h).inspect
+  puts result.map(&:to_h).inspect
+  return result
    end
 end
 
 
-request = MySqliteRequest.new()
-#request = request.from('data.csv').select.where('position', 'G').order("name","desc").run
+#request = MySqliteRequest.new()
+#request = request.from('data.csv').select("name","year_end").where('position', 'G').order("name","desc").run
 #request = request.update("data.csv").set("position" => "H", "year_end" => "1234").where("name","John Abramovic").run
 #request = request.from('data.csv').delete.where("name","John Abramovic").run
-request = request.from('data.csv').select("name").join("year_start","data1.csv","year_end").run
+#request = request.from('data.csv').select("name").join("year_start","data1.csv","year_end").run
