@@ -91,14 +91,16 @@ class MySqliteRequest
 
       #checking for where condition specified
       if @where_conditions.any? &&  !@columns.empty?
+         #puts @where_conditions, @columns
         result = result.select do |row|
-          @where_conditions.all? { |condition|row[condition[:column_name]] == condition[:value] }
+          @where_conditions.all? { |condition| row[condition[:column_name]] == condition[:value] }
         end
+       
         if !@join_condition
           result = result.map { |row| row.select { |k, v| @columns.include?(k)} }
         end
       end
-
+     #puts result
 
       #checking for a join condition
       if @join_condition
@@ -120,8 +122,8 @@ class MySqliteRequest
             result = result.select { |k, v| @columns.include?(k) }
             
       end
+
       
-      puts result
       #ordering the columns to be displayed if order clause is specified
       if @order_by 
         
@@ -141,7 +143,7 @@ class MySqliteRequest
 
       #Updating tables using the where conditions 
       if @table_name && @update_data.any?
-        #puts @table_name, @update_data, @update_conditions
+        puts @table_name, @update_data, @update_conditions
         result.each do |row|
           if @update_conditions.all? { |condition|  
             row[condition[:column_name]] == condition[:value]}
@@ -188,7 +190,7 @@ class MySqliteRequest
 
 
 #request = MySqliteRequest.new()
-#request = request.from('noel.csv').select("name","age").where('name', 'Marie').order("age","asc").run
+#request = request.from('noel.csv').select("name","age").where('name', 'Marie').order("age","desc").run
 #request = request.update("noel.csv").set("name" => "Marie", "age" => "23").where("name","Noella").run
 #request = request.from('noel.csv').delete.where("name","Marie").run
 #request = request.from('noel.csv').select("name","age").where('name', 'Marie').join("age","marie.csv","amount").order("name","desc").run

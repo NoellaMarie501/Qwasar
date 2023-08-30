@@ -36,40 +36,33 @@ loop do
         end
         #getting the columns
         columnset, rest = rest.split(" FROM ")
-        columns = columnset.gsub(/[ ]/, '').split(',')#getting columns to be displayes triming off spaces
+        columns = nil
+        columns = columnset.gsub(/[ ]/, '').split(',')if columnset != '*'  #getting columns to be displayes triming off spaces
         
         #Getting the table name and where conditions
-        table, conditionset = rest.split(" WHERE ")
-        column_name, value = conditionset.gsub(/[ "';]/, "").split("=")
-       
-       
-
-        #where = rest.split(" WHERE ")
-        puts "join ######################################################"
-        puts "column_on_db_a", column_on_db_a
-        puts "join_table", join_table
-        puts "column_on_db_b", column_on_db_b
-        puts "order ########################################################"
-        puts "column =", column
-        puts "order =", order
-        puts "others ####################################################"
-        columns.each do |column|
-          puts column.class
+        if rest.include?("WHERE")
+          table, conditionset = rest.split(" WHERE ") 
+          column_name, value = conditionset.split(" = ")
+          column_name = column_name.gsub(/[ "';]/, "")
+          value = value.gsub(/["';]/, "")
+         
+        else 
+          table = rest
         end
-        puts "columns =", columns.class
-        puts "table =", table
-        puts "column name =", column_name.class
-        puts "value =", value.class
-       
-        
-
+       puts columns
        request = request.from(table).select(*columns).where(column_name, value)
-      # request = request.from('noel.csv').select("name").join("age","marie.csv","amount").order("age","desc").run
+
     when "insert"
       table_keys, values = rest.split(" VALUES ")
-      table_keys = table_keys.split(" ",3) 
+      table_keys = table_keys.split(" ",3)
       table = table_keys[1]#gettintg table or file name
-      keys = table_keys[2].gsub(/[( ';)"]/, '').split(',')
+      hash_data = nil
+      if table_keys.count() == 3 
+         keys = table_keys[2].gsub(/[( ';)"]/, '').split(',')#ontaining keys if passed in request
+      else 
+        csv = CSV.read(table, headers: true)
+        keys = csv.headers#obtaining keys from csv file if not passed in request
+      end
       values = values.gsub(/[( ";')]/, '').split(",")#gettintg the values to be inserted and removing special characters
       hash_data = keys.zip(values).to_h# creating a hash the values
       request = MySqliteRequest.new.insert(table).values(hash_data)
