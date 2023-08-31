@@ -1,0 +1,42 @@
+
+* {
+
+  font-family: 'Press Start 2P', cursive;
+
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+}
+
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tetris {
+  border: solid 3px;
+  background-color: rgb(64, 43, 226);
+  box-shadow: 0 0 10px 0 lightgray;
+}
+
+ 
+.play-button {
+  background-color: #4caf50;
+  font-size: 16px;
+  padding: 15px 30px;
+  cursor: pointer;
+}
+
+
+ .detailsRight {
+	position: relative;
+	height: calc(100vh/3);
+  text-align: left;
+}
