@@ -249,6 +249,13 @@ class MySqliteRequest
     end
   end
 
+  # request = MySqliteRequest.new
+  # request = request.delete()
+  # request = request.from('nba_player_data.csv')
+  # request = request.where('name', 'Alaa Abdelnaby')
+  # request.run
+
+
 
 #request = MySqliteRequest.new()
 #request = request.where('position', 'G').select("name","year_end").from('data.csv').order("name","desc").run

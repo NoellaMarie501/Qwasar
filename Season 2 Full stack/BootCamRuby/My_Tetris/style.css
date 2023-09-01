@@ -22,7 +22,7 @@
 
 .tetris {
   border: solid 3px;
-  background-color: rgb(64, 43, 226);
+  background-color: #402BE2;
   box-shadow: 0 0 10px 0 lightgray;
 }
 
@@ -40,3 +40,4 @@
 	height: calc(100vh/3);
   text-align: left;
 }
+

@@ -49,7 +49,7 @@ loop do
         else 
           table = rest
         end
-       puts columns
+      # puts columns
        request = request.from(table).select(*columns).where(column_name, value)
 
     when "insert"
