@@ -1,9 +1,20 @@
 const down = ["ArrowDown","2"];
 const left = ["ArrowLeft","4"];
 const right = ["ArrowRight","6"];
-const hardrop = ["ArrowUp","8","x","1","9","5"]
+const hardrop = ["ArrowUp","8","x","1","9","5"];
+const counterclockwise = ["A"]
+const clockwise = ["B"]
 
-//const 
+//Game properties score,liness, level
+    var gameScore = 0;
+    var completeLines = 0;
+    var gameLevel = 1;
+    var speed = 500
+   
+    
+   // var gameScore = 0
+
+//constants holding the various tetrimino shapes
 const SHAPES = [
     [
         [0,1,0,0],
@@ -41,19 +52,20 @@ const SHAPES = [
         [1,1]
 
     ]
-]
-
+];
+//constant holding the various colors of the tetrimino shapes
 const COLORS = [
     "#402BE2",
-    "#00FFFF",
-    "#000000",
-    "#FF0000",
-    "#0000FF",
-    "#FFA500",
-    "#800080",
-    "#FFFF00"
-]
+    '#00FFFF',
+    '#FF0000', 
+    '#008000', 
+    '#0000FF',
+    '#FFA500', 
+    '#800080', 
+    '#FFFF00'
+];
 
+//rows and columns of the game board
 const ROWS = 40;
 const COLUMNS = 10;
 const VISIBLE_ROWS = 20;
@@ -66,30 +78,30 @@ let context = canvas.getContext("2d");//to be able to edit or draw in the canvas
 
 context.scale(30,30);// this is the size of each block(pixel) in the canvas. note the height in the html page is calculated rows(visible)*block_size and width in the html page is calculated columns*block_size
 
-let piece_object = null// will hold our piece with it's properties
-let grid = generate_blank_grid()// holds the entire grid surface
+let pieceObject = null// will hold our piece with it's properties
+let grid = generateBlankGrid();// holds the entire grid surface
 
 //Function to generate a random block representing the trtis pieces
 function generateRandomPiece(){
     let random = Math.floor(Math.random()*7);
-    let piece = SHAPES[random]
-    let colorIndex = random+1// because there is the first color which is the background color
-    let x_cordinate = 3// or any number since we want our pieces to come done at the middle of the canvas display
-    let y_cordinate = 0
-    piece_object = {piece, colorIndex, x_cordinate, y_cordinate}//full details of the piece
+    let piece = SHAPES[random];
+    let colorIndex = random+1;// because there is the first color which is the background color
+    let x_cordinate = 3;// or any number since we want our pieces to come done at the middle of the canvas display
+    let y_cordinate = 0;
+    pieceObject = {piece, colorIndex, x_cordinate, y_cordinate};//full details of the piece
 
-    return piece_object
+    return pieceObject;
     //console.log(SHAPES[random]);
 }
 
 // Function to render the piece to the canvas screen
 function renderPiece(){
-    let piece = piece_object.piece
+    let piece = pieceObject.piece;
     for(let i = 0; i < piece.length; i++){
         for(let j = 0; j < piece[i].length; j++){
             if(piece[i][j] == 1){
-                context.fillStyle = COLORS[piece_object.colorIndex];// telling the canvas which color to fill parts f the pieces with
-                context.fillRect(piece_object.x_cordinate+j, piece_object.y_cordinate+i, 1, 1);
+                context.fillStyle = COLORS[pieceObject.colorIndex];// telling the canvas which color to fill parts f the pieces with
+                context.fillRect(pieceObject.x_cordinate+j, pieceObject.y_cordinate+i, 1, 1);
             }
             
         }
@@ -97,49 +109,79 @@ function renderPiece(){
 }
 
 //function to move downwards
-function move_down(){
-    if(!piece_at_edge(piece_object.x_cordinate, piece_object.y_cordinate + 1)){
-        piece_object.y_cordinate++;
+function moveDown(){
+    if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate + 1)){
+        pieceObject.y_cordinate++;
     }
     else{
-        for(let i = 0; i < piece_object.piece.length; i++){
-            for(let j = 0; j < piece_object.piece[i].length; j++){
-                if(piece_object.piece[i][j] == 1){
-                    p = piece_object.x_cordinate + j;
-                    q = piece_object.y_cordinate + i;
-                    grid[q][p] = piece_object.colorIndex;
+        for(let i = 0; i < pieceObject.piece.length; i++){
+            for(let j = 0; j < pieceObject.piece[i].length; j++){
+                if(pieceObject.piece[i][j] == 1){
+                    p = pieceObject.x_cordinate + j;
+                    q = pieceObject.y_cordinate + i;
+                    grid[q][p] = pieceObject.colorIndex;
                 }
             }
         }
-        if(piece_object.y_cordinate == 0){
+        gameScore++;
+        if(pieceObject.y_cordinate == 0){
             alert("Game over");
-            grid = generate_blank_grid()//clearing the board to start over
+            grid = generateBlankGrid()//clearing the board to start over
+            gameScore = 0;
+            completeLines = 0;
+            gameLevel = 1
         }
-        piece_object = null;
+        pieceObject = null;
     }
-    render_blank_Grid()
+    renderBlankGrid();
 }
 
 //function to move left
-function move_left(){
-    if(!piece_at_edge(piece_object.x_cordinate - 1, piece_object.y_cordinate)){
-        piece_object.x_cordinate--;
+function moveLeft(){
+    if(!pieceAtEdge(pieceObject.x_cordinate - 1, pieceObject.y_cordinate)){
+        pieceObject.x_cordinate--;
     }
-    render_blank_Grid()
+    renderBlankGrid();
 }
 
 //function to move right
-function move_right(){
-    if(!piece_at_edge( piece_object.x_cordinate + 1, piece_object.y_cordinate)){
-        piece_object.x_cordinate++;
+function moveRight(){
+    if(!pieceAtEdge( pieceObject.x_cordinate + 1, pieceObject.y_cordinate)){
+        pieceObject.x_cordinate++;
     } 
-    render_blank_Grid()
+    renderBlankGrid();
 }
 
     
-//Functions to rotate a peice
-    function Rotate() {
-        let piece = piece_object.piece
+//Functions to rotateClockwise a peice
+    function rotateClockwise() {
+        let piece = pieceObject.piece;
+        const rows = piece.length;
+        const cols = piece[0].length;
+        //Reversing the matrix after the transpose
+        for(let i = 0; i < piece.length; i++) {
+            piece[i] = piece[i].reverse();
+        }
+        //Creating the transpose of the matrix
+        var transposedPiece = [];
+        for (let j = 0; j < cols; j++) {
+          transposedPiece[j] = [];
+          for (let i = 0; i < rows; i++) {
+            transposedPiece[j][i] = piece[i][j];
+          }
+        }
+        
+        if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
+            pieceObject.piece = transposedPiece;
+        }
+        
+        renderBlankGrid();
+        return transposedPiece;
+      }
+
+      //Functions to rotateCounterclockwise a peice
+      function rotateCounterclockwise() {
+        let piece = pieceObject.piece;
         const rows = piece.length;
         const cols = piece[0].length;
         //Creating the transpose of the matrix
@@ -154,35 +196,38 @@ function move_right(){
         for(let i = 0; i < transposedPiece.length; i++) {
             transposedPiece[i] = transposedPiece[i].reverse();
         }
-        if(!piece_at_edge(piece_object.x_cordinate, piece_object.y_cordinate, transposedPiece)){
-            piece_object.piece = transposedPiece
+        
+        
+        if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
+            pieceObject.piece = transposedPiece;
         }
         
-        render_blank_Grid()
+        renderBlankGrid();
         return transposedPiece;
       }
+      
      
    
    
 
 
 //Funtion to create a blank grid(to paint with the backgroud color) with the rows and columns
-function generate_blank_grid(){
+function generateBlankGrid(){
     let grid = [];
     for(let i = 0; i < ROWS; i++){
          grid.push([]);
         for(let j = 0; j < COLUMNS; j++){
-            grid[i].push(0)
+            grid[i].push(0);
         }
     }
     return grid;
 }
 
 //Function to render the grid and give a blank effect
-function render_blank_Grid(){
+function renderBlankGrid(){
     for(let i = 0; i < grid.length; i++){
         for(let j = 0; j < grid[i].length; j++){
-            context.fillStyle = COLORS[grid[i][j]]// telling the canvas which color to fill parts f the pieces with
+            context.fillStyle = COLORS[grid[i][j]];// telling the canvas which color to fill parts f the pieces with
             context.fillRect(j,i, 1, 1);
         }
     }
@@ -190,8 +235,8 @@ function render_blank_Grid(){
 }
 
 //function to check if pice at edge
-function piece_at_edge(x_cordinate, y_cordinate, transposedPiece){
-    let piece = transposedPiece || piece_object.piece  ;
+function pieceAtEdge(x_cordinate, y_cordinate, transposedPiece){
+    let piece = transposedPiece || pieceObject.piece;
     for(let i = 0; i < piece.length; i++){
         for(let j = 0; j < piece[i].length; j++){
             if(piece[i][j] == 1){
@@ -213,7 +258,7 @@ function piece_at_edge(x_cordinate, y_cordinate, transposedPiece){
 
 //Checking if there is a complete row
 function completeRow(){
-    var count = 0
+    var count = 0;
     for (let i = 0; i < grid.length; i++){
         let completeRow = true;
         for(j = 0; j < grid[i].length; j++){
@@ -226,29 +271,57 @@ function completeRow(){
             grid.splice(i, 1);//remove that row
             grid.unshift([0,0,0,0,0,0,0,0,0,0]);//and add an empty row at the top
             count++;
+            completeLines++;
         }
     }
-    if(count < 2){
-       score.innerHTML = (10 * count).toString();
+    //displaying score
+    if(count == 1){
+      gameScore += (count * 10);
     }
-    else if(count > 2){
-        score.innerHTML = (10 * (count + 1)).toString();
+    else if(count == 2){
+        gameScore += ((count+1) * 10);
     }
+    else if(count >= 3 && count <= 5){
+        gameScore += ((count+2) * 10);
+    }
+    else if(count > 5){
+        gameScore += ((count+3) * 10);
+    }
+
+    lines.innerHTML = completeLines.toString();
+    score.innerHTML = gameScore.toString();
+
+    //displaying levels
+    if(gameScore <= 2 ){
+        gameLevel = 1;
+    }
+    else if(gameScore > 2 && gameScore <= 100){
+        gameLevel = 2;
+    }
+    else if(gameScore > 100 && gameScore <= 500){
+        gameLevel = 3;
+    }
+    else if(gameScore > 500 && gameScore <= 1000){
+        gameLevel = 4;
+    }
+    else {
+        gameLevel = 5;
+    }
+    level.innerHTML = gameLevel.toString();
+    return gameLevel
+    
 }
 
 
-
-
-
 //Game logic
-function game_logic(){
+function gameLogic(){
     completeRow();
-    if(piece_object == null){
-         piece_object = generateRandomPiece();
+    if(pieceObject == null){
+         pieceObject = generateRandomPiece();
          renderPiece();
-    }
-    move_down();
-     
+    } 
+    moveDown();
+   
 }
 
 
@@ -257,24 +330,42 @@ document.onkeydown = function(event) {
     let key = event.key
     if(down.includes(key)) {
         console.log("Key pressed: " + key);
-        move_down(); 
+        moveDown(); 
     }
     if(left.includes(key)) {
         console.log("Key pressed: " + key);
-        move_left(); 
+        moveLeft(); 
     }
     if(right.includes(key)) {
         console.log("Key pressed: " + key);
-        move_right(); 
+        moveRight(); 
     }
-    if(hardrop.includes(key)) {
+    if(hardrop.includes(key) || clockwise.includes(key)) {
         console.log("Key pressed: " + key);
-        Rotate(); 
+        rotateClockwise(); 
+    }
+    if(counterclockwise.includes(key)){
+        console.log("Key pressed: " + key);
+        rotateCounterclockwise(); 
     }
 
   };
   
+  let intervalId;
+  
+  function updateSpeed() {
+    if (gameLevel == 2) {
+        console.log(gameLevel)
+      speed -= 100; // decrease speed by 50
+    } else if (gameLevel == 3) {
+      speed -= 200; // decrease speed by 100
+    }
+    clearInterval(intervalId); // clear previous interval
+    intervalId = setInterval(gameLogic, speed); // create new interval with updated speed
+  }
+  
+  updateSpeed(); // call updateSpeed function with the game level
+  
 
-setInterval(game_logic,500);
 
 
