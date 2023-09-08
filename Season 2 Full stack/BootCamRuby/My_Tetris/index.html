@@ -6,6 +6,8 @@
   <title>Document</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet"/>
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+
 </head>
 <body>
 
@@ -14,15 +16,16 @@
     <div class="game">
       <div class="detailsRight">
         <div class="controls">
-          <p><i class="fas fa-arrow-left"></i> Move Left</p>
-          <p><i class="fas fa-arrow-right"></i> Move Right</p>
-          <p><i class="fas fa-arrow-down"></i> Move Down</p>
-          <p><i class="fas fa-arrow-up"></i> Rotate Right</p>
-          <p><span style="font-size : 18px">Q</span> Rotate Left</p>
-          <p><span style="font-size : 18px">W</span> Rotate Right</p>
+          <p><i class="fa-solid fa-arrow-left"></i> Move Left</p>
+          <p><i class="fa-solid fa-arrow-right"></i> Move Right</p>
+          <p><i class="fa-solid fa-arrow-down"></i> Move Down/Soft Drop</p>
+          <p><i class="fa-solid fa-arrow-up"> ArrowUp </i>Rotate</p>
+          <p><i class="fa-solid fa-rotate-left"> A</i></span> Rotate Left</p>
+          <p><i class="fa-solid fa-rotate-right"> B </i></span> Rotate Right</p>
           <p><span style="font-size: 18px">Esc</span> Pause Game</p>
         </div>
       </div>
+      <button onclick="start()">Start/Resume</button>
     </div>
     <div class="sidebar">
       <div class="right-column">
@@ -36,7 +39,9 @@
         <button onclick="play()" class="play-button">Play</button>
        --> 
       </div>
+     
     </div>
+    
   </div>
 
   <script type="text/javascript" src="my_tetris.js"></script>

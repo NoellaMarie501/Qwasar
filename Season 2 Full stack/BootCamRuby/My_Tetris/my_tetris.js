@@ -1,10 +1,11 @@
 const down = ["ArrowDown","2"];
 const left = ["ArrowLeft","4"];
 const right = ["ArrowRight","6"];
-const hardrop = ["ArrowUp","8","x","1","9","5"];
-const counterclockwise = ["A"]
-const clockwise = ["B"]
-
+const counterclockwise = ["control","z","3","7"]
+const clockwise = ["b","1","9","5","ArrowUp","X"]
+const Hardrop = [" ","8"]
+const hold = ["SHIFT","c", "0"]
+const pause = ["escape","F1"]
 //Game properties score,liness, level
     var gameScore = 0;
     var completeLines = 0;
@@ -151,18 +152,37 @@ function moveRight(){
     } 
     renderBlankGrid();
 }
+//performing harddrop
+// function hardrop(){
+//     if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate + 1)){
+       
+//             pieceObject.y_cordinate += (17 - pieceObject.y_cordinate)  ;
+        
+        
+//             // for(let i = 0; i < pieceObject.piece.length; i++){
+//             //     for(let j = 0; j < pieceObject.piece[i].length; j++){
+//             //         if(pieceObject.piece[i][j] == 1){
+//             //             p = pieceObject.x_cordinate + j;
+//             //             q = pieceObject.y_cordinate + i;
+//             //             grid[q][p] = pieceObject.colorIndex;
+//             //         }
+//             //     }
+//             // }
+//     }
+//     renderBlankGrid();
 
+// }
     
 //Functions to rotateClockwise a peice
-    function rotateClockwise() {
+    function rotateCounterclockwise() {
         let piece = pieceObject.piece;
         const rows = piece.length;
         const cols = piece[0].length;
-        //Reversing the matrix after the transpose
+      //reversing piece
         for(let i = 0; i < piece.length; i++) {
             piece[i] = piece[i].reverse();
         }
-        //Creating the transpose of the matrix
+        //transposing reversed piece
         var transposedPiece = [];
         for (let j = 0; j < cols; j++) {
           transposedPiece[j] = [];
@@ -176,39 +196,34 @@ function moveRight(){
         }
         
         renderBlankGrid();
-        return transposedPiece;
-      }
-
-      //Functions to rotateCounterclockwise a peice
-      function rotateCounterclockwise() {
-        let piece = pieceObject.piece;
-        const rows = piece.length;
-        const cols = piece[0].length;
-        //Creating the transpose of the matrix
-        var transposedPiece = [];
-        for (let j = 0; j < cols; j++) {
-          transposedPiece[j] = [];
-          for (let i = 0; i < rows; i++) {
-            transposedPiece[j][i] = piece[i][j];
-          }
-        }
-        //Reversing the matrix after the transpose
-        for(let i = 0; i < transposedPiece.length; i++) {
-            transposedPiece[i] = transposedPiece[i].reverse();
-        }
-        
-        
-        if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
-            pieceObject.piece = transposedPiece;
-        }
-        
-        renderBlankGrid();
-        return transposedPiece;
+        return transposedPiece; 
       }
       
-     
-   
-   
+//Functions to rotateClockwise a peice
+function rotateClockwise() {
+    let piece = pieceObject.piece;
+    const rows = piece.length;
+    const cols = piece[0].length;
+    //Creating the transpose of the matrix
+    var transposedPiece = [];
+    for (let j = 0; j < cols; j++) {
+      transposedPiece[j] = [];
+      for (let i = 0; i < rows; i++) {
+        transposedPiece[j][i] = piece[i][j];
+      }
+    }
+    for(let i = 0; i < transposedPiece.length; i++) {
+        transposedPiece[i] = transposedPiece[i].reverse();
+    }
+    
+    if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
+        pieceObject.piece = transposedPiece;
+    }
+    
+    renderBlankGrid();
+    return transposedPiece;
+  }
+  
 
 
 //Funtion to create a blank grid(to paint with the backgroud color) with the rows and columns
@@ -292,10 +307,10 @@ function completeRow(){
     score.innerHTML = gameScore.toString();
 
     //displaying levels
-    if(gameScore <= 2 ){
+    if(gameScore <= 5 ){
         gameLevel = 1;
     }
-    else if(gameScore > 2 && gameScore <= 100){
+    else if(gameScore > 5 && gameScore <= 100){
         gameLevel = 2;
     }
     else if(gameScore > 100 && gameScore <= 500){
@@ -311,18 +326,19 @@ function completeRow(){
     return gameLevel
     
 }
-
-
-//Game logic
-function gameLogic(){
-    completeRow();
-    if(pieceObject == null){
-         pieceObject = generateRandomPiece();
-         renderPiece();
-    } 
-    moveDown();
-   
-}
+// function updateSpeed() {
+//     if (gameLevel === 1) {
+//       speed = 500;
+//     } else if (gameLevel === 2) {
+//       speed = 100;
+//     } else if (gameLevel === 3) {
+//       speed = 50;
+//     } else if (gameLevel === 4) {
+//       speed = 25;
+//     } else if (gameLevel === 5) {
+//       speed = 15;
+//     }
+//   }
 
 
 //Detecting user key pressed
@@ -340,7 +356,7 @@ document.onkeydown = function(event) {
         console.log("Key pressed: " + key);
         moveRight(); 
     }
-    if(hardrop.includes(key) || clockwise.includes(key)) {
+    if(clockwise.includes(key)) {
         console.log("Key pressed: " + key);
         rotateClockwise(); 
     }
@@ -348,24 +364,30 @@ document.onkeydown = function(event) {
         console.log("Key pressed: " + key);
         rotateCounterclockwise(); 
     }
-
-  };
-  
-  let intervalId;
-  
-  function updateSpeed() {
-    if (gameLevel == 2) {
-        console.log(gameLevel)
-      speed -= 100; // decrease speed by 50
-    } else if (gameLevel == 3) {
-      speed -= 200; // decrease speed by 100
+    if(Hardrop.includes(key)) {
+        console.log("Key pressed: " + key);
+       // hardrop(); 
     }
-    clearInterval(intervalId); // clear previous interval
-    intervalId = setInterval(gameLogic, speed); // create new interval with updated speed
-  }
   
-  updateSpeed(); // call updateSpeed function with the game level
-  
-
-
+  };
+  //Game logic
+function gameLogic(){
+    completeRow();
+    if(pieceObject == null){
+         pieceObject = generateRandomPiece();
+         renderPiece();
+    } 
+    moveDown();
+   
+}
+//clearInterval(intervalid);
+function start(){ 
+    let intervalid = setInterval(gameLogic, speed);
+    document.onkeydown = function(event) {
+        key = event.key
+        if(hold.includes(key)){
+               clearInterval(intervalid);
+        }
+    }
+}
 
