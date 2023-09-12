@@ -1,10 +1,11 @@
 require 'readline'
 require_relative 'test'
-
+#displaying code version and time
 puts "MySQLite version 0.1 #{Time.now.strftime('%Y-%m-%d')}"
 prompt = "my_sqlite_cli> "
 
 loop do
+    #reading user input from cmd
   input = Readline.readline(prompt, true)
   #puts input
   #break if input == "quit\n"
@@ -58,13 +59,13 @@ loop do
       table = table_keys[1]#gettintg table or file name
       hash_data = nil
       if table_keys.count() == 3 
-         keys = table_keys[2].gsub(/[( ';)"]/, '').split(',')#ontaining keys if passed in request
+         keys = table_keys[2].gsub(/[( ';)"]/, '').split(',')#obtaining keys if passed in request
       else 
         csv = CSV.read(table, headers: true)
         keys = csv.headers#obtaining keys from csv file if not passed in request
       end
       values = values.gsub(/[( ";')]/, '').split(",")#gettintg the values to be inserted and removing special characters
-      hash_data = keys.zip(values).to_h# creating a hash the values
+      hash_data = keys.zip(values).to_h# creating a hash of the keys and values
       request = MySqliteRequest.new.insert(table).values(hash_data)
 
     when "update"
@@ -72,7 +73,7 @@ loop do
       table, rest = rest.split(" SET ")
       values, conditions_set = rest.split(" WHERE ")
       values = values.gsub(/[( ';")]/, '').split(',')
-      hash_values = values.map { |pair| pair.split('=') }.to_h
+      hash_values = values.map { |pair| pair.split('=') }.to_h #creating a hash of the values to be updated
       column, value = conditions_set.gsub(/[ ;'"]/, '').split("=")
       #puts "table= #{table}", "hash_values= #{hash_values}", "column= #{column}", "value= #{value}"
       request = MySqliteRequest.new.update(table).set(hash_values).where(column,value)
@@ -92,7 +93,7 @@ loop do
       next
     end
 
-    # Execute the request and print the result
+    # Execute the request and print the result or errors if any
     request.run
   rescue StandardError => e
     puts "Error: #{e.message}"

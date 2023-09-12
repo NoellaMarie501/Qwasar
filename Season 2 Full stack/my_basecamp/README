@@ -1,0 +1,21 @@
+# Welcome to My Basecamp project
+
+# Descrition
+* This is a project meant to facilitate project management amoungst a team
+* The Main functionalities are:
+    - A user should be able to register
+    - A user should be able to perform CRUD on a project
+    - A user can be added, deleted edited or viewed 
+    - User should have a role either a simple user or a user and an admin at the same time
+
+# Project Structure
+* The project is structured as follows:
+    - API Folder : containing the backend of our project
+        - apiCore folder : containing the files that process our received dta from equests
+            - controllers folder : containing the route controllers of our project
+            - Services folder :services that controls and validates received data before any communication is done with the database
+        - Database folder: contains files that communicate direcetly with our database
+            - Models folder : contains the models or tables of our database
+            - Repository folder : contains methods that save, update, delete and fetch data from our database
+            - export_classes file : to export our various repository classes and methods as a module
+    - Web Folder
