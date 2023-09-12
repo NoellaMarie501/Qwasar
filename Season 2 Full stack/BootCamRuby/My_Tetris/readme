@@ -1,0 +1,27 @@
+# Welcome to My Tetris
+My Tettris Game with HTML, Javascript and CSS
+
+## Task
+The task was to recreate The famous Tetris game using Html 5 canvas. The game has a set of descriptions and rules to follow
+
+## Description
+-I used Html 5 canvas to have a 2d drawing board where i used matrices to form each block or tetrimino and colored them
+-In css i styled the html page that displays the score, level and number of lines completed by the player
+-In js i created several functions for the creation and running of the game such as the render piece, generate piece, the game logic, the start function, move left, move right, down, rotate and hardrop functions
+I used a set interval function with a specified speed for the piece to move down when the game starts
+When the game starts the control keys pressed are being detected and various vfunctions are called for the execution of the game such as moving left, right e.t.c.
+
+## Installation
+No special installation required for project.
+-To be able launch and play the game the server needs to be started with the command "node html_server.js" in the terminal
+-To run project on server use the url "http://web-t9f2e5112-129c.docode.fi.qwasar.io"
+## Usage
+-When game launched press the start button to start the game and 0 or shift+c to pause
+-Tetrimino is generated and moved down. the player has to position the tetriminos using the arrow keys control to move down,rotate, move left, move right and then tetrimino is locked such that a complete line is made to be removed afterwards
+```
+
+### The Core Team
+
+
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px' /></span>

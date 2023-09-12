@@ -1,10 +1,10 @@
 const down = ["ArrowDown","2"];
 const left = ["ArrowLeft","4"];
 const right = ["ArrowRight","6"];
-const counterclockwise = ["control","z","3","7"]
-const clockwise = ["b","1","9","5","ArrowUp","X"]
+const counterclockwise = ["z","3","7","Z"]
+const clockwise = ["b","1","9","5","ArrowUp","X","x","B"]
 const Hardrop = [" ","8"]
-const hold = ["SHIFT","c", "0"]
+const hold = ["0"]
 const pause = ["escape","F1"]
 //Game properties score,liness, level
     var gameScore = 0;
@@ -44,9 +44,9 @@ const SHAPES = [
         [0,1,1]
     ],
     [   
-        [1,1,1],
+        [0,0,0],
         [0,1,0],
-        [0,0,0]
+        [1,1,1]
     ],
     [
         [1,1],
@@ -87,9 +87,15 @@ function generateRandomPiece(){
     let random = Math.floor(Math.random()*7);
     let piece = SHAPES[random];
     let colorIndex = random+1;// because there is the first color which is the background color
-    let x_cordinate = 3;// or any number since we want our pieces to come done at the middle of the canvas display
-    let y_cordinate = 0;
-    pieceObject = {piece, colorIndex, x_cordinate, y_cordinate};//full details of the piece
+    let x_coordinate;
+    if(random == 0 || random == 6){
+         x_coordinate = 3;
+    }
+    else{
+        x_coordinate = Math.floor(Math.random()*6);
+    }// or any number since we want our pieces to come done at the middle of the canvas display
+    let y_coordinate = 0;
+    pieceObject = {piece, colorIndex, x_coordinate, y_coordinate};//full details of the piece
 
     return pieceObject;
     //console.log(SHAPES[random]);
@@ -102,7 +108,7 @@ function renderPiece(){
         for(let j = 0; j < piece[i].length; j++){
             if(piece[i][j] == 1){
                 context.fillStyle = COLORS[pieceObject.colorIndex];// telling the canvas which color to fill parts f the pieces with
-                context.fillRect(pieceObject.x_cordinate+j, pieceObject.y_cordinate+i, 1, 1);
+                context.fillRect(pieceObject.x_coordinate+j, pieceObject.y_coordinate+i, 1, 1);
             }
             
         }
@@ -111,26 +117,28 @@ function renderPiece(){
 
 //function to move downwards
 function moveDown(){
-    if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate + 1)){
-        pieceObject.y_cordinate++;
+    if(!pieceAtEdge(pieceObject.x_coordinate, pieceObject.y_coordinate + 1)){
+        pieceObject.y_coordinate++;
     }
     else{
         for(let i = 0; i < pieceObject.piece.length; i++){
             for(let j = 0; j < pieceObject.piece[i].length; j++){
                 if(pieceObject.piece[i][j] == 1){
-                    p = pieceObject.x_cordinate + j;
-                    q = pieceObject.y_cordinate + i;
+                    p = pieceObject.x_coordinate + j;
+                    q = pieceObject.y_coordinate + i;
                     grid[q][p] = pieceObject.colorIndex;
                 }
             }
         }
         gameScore++;
-        if(pieceObject.y_cordinate == 0){
+        if(pieceObject.y_coordinate == 0){
             alert("Game over");
             grid = generateBlankGrid()//clearing the board to start over
             gameScore = 0;
             completeLines = 0;
             gameLevel = 1
+            clearInterval(intervalid);
+            intervalid = setInterval(gameLogic,speed);
         }
         pieceObject = null;
     }
@@ -139,39 +147,32 @@ function moveDown(){
 
 //function to move left
 function moveLeft(){
-    if(!pieceAtEdge(pieceObject.x_cordinate - 1, pieceObject.y_cordinate)){
-        pieceObject.x_cordinate--;
+    if(!pieceAtEdge(pieceObject.x_coordinate - 1, pieceObject.y_coordinate)){
+        pieceObject.x_coordinate--;
     }
     renderBlankGrid();
 }
 
 //function to move right
 function moveRight(){
-    if(!pieceAtEdge( pieceObject.x_cordinate + 1, pieceObject.y_cordinate)){
-        pieceObject.x_cordinate++;
+    if(!pieceAtEdge( pieceObject.x_coordinate + 1, pieceObject.y_coordinate)){
+        pieceObject.x_coordinate++;
     } 
     renderBlankGrid();
 }
-//performing harddrop
-// function hardrop(){
-//     if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate + 1)){
-       
-//             pieceObject.y_cordinate += (17 - pieceObject.y_cordinate)  ;
-        
-        
-//             // for(let i = 0; i < pieceObject.piece.length; i++){
-//             //     for(let j = 0; j < pieceObject.piece[i].length; j++){
-//             //         if(pieceObject.piece[i][j] == 1){
-//             //             p = pieceObject.x_cordinate + j;
-//             //             q = pieceObject.y_cordinate + i;
-//             //             grid[q][p] = pieceObject.colorIndex;
-//             //         }
-//             //     }
-//             // }
-//     }
-//     renderBlankGrid();
 
-// }
+// Function to perform a hard drop
+function hardDrop() {
+    let newY = pieceObject.y_coordinate; 
+  
+    while (!pieceAtEdge(pieceObject.x_coordinate, newY + 1)) {
+        newY++;
+    }
+    pieceObject.y_coordinate = newY;
+    renderBlankGrid();
+}
+
+
     
 //Functions to rotateClockwise a peice
     function rotateCounterclockwise() {
@@ -191,7 +192,7 @@ function moveRight(){
           }
         }
         
-        if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
+        if(!pieceAtEdge(pieceObject.x_coordinate, pieceObject.y_coordinate, transposedPiece)){
             pieceObject.piece = transposedPiece;
         }
         
@@ -212,11 +213,12 @@ function rotateClockwise() {
         transposedPiece[j][i] = piece[i][j];
       }
     }
+    //reversing transposed piece
     for(let i = 0; i < transposedPiece.length; i++) {
         transposedPiece[i] = transposedPiece[i].reverse();
     }
     
-    if(!pieceAtEdge(pieceObject.x_cordinate, pieceObject.y_cordinate, transposedPiece)){
+    if(!pieceAtEdge(pieceObject.x_coordinate, pieceObject.y_coordinate, transposedPiece)){
         pieceObject.piece = transposedPiece;
     }
     
@@ -250,15 +252,15 @@ function renderBlankGrid(){
 }
 
 //function to check if pice at edge
-function pieceAtEdge(x_cordinate, y_cordinate, transposedPiece){
+function pieceAtEdge(x_coordinate, y_coordinate, transposedPiece){
     let piece = transposedPiece || pieceObject.piece;
     for(let i = 0; i < piece.length; i++){
         for(let j = 0; j < piece[i].length; j++){
             if(piece[i][j] == 1){
-                let edge = x_cordinate + j;
-                let buttom = y_cordinate + i;
+                let edge = x_coordinate + j;
+                let buttom = y_coordinate + i;
                 if(edge >=0 && edge < COLUMNS && buttom >= 0 && buttom < VISIBLE_ROWS){
-                    if(grid[buttom][edge] != 0){
+                    if(grid[buttom][edge] > 0){
                         return true;
                     }
                 }
@@ -307,10 +309,10 @@ function completeRow(){
     score.innerHTML = gameScore.toString();
 
     //displaying levels
-    if(gameScore <= 5 ){
+    if(gameScore <= 10 ){
         gameLevel = 1;
     }
-    else if(gameScore > 5 && gameScore <= 100){
+    else if(gameScore > 10 && gameScore <= 100){
         gameLevel = 2;
     }
     else if(gameScore > 100 && gameScore <= 500){
@@ -326,50 +328,7 @@ function completeRow(){
     return gameLevel
     
 }
-// function updateSpeed() {
-//     if (gameLevel === 1) {
-//       speed = 500;
-//     } else if (gameLevel === 2) {
-//       speed = 100;
-//     } else if (gameLevel === 3) {
-//       speed = 50;
-//     } else if (gameLevel === 4) {
-//       speed = 25;
-//     } else if (gameLevel === 5) {
-//       speed = 15;
-//     }
-//   }
 
-
-//Detecting user key pressed
-document.onkeydown = function(event) {
-    let key = event.key
-    if(down.includes(key)) {
-        console.log("Key pressed: " + key);
-        moveDown(); 
-    }
-    if(left.includes(key)) {
-        console.log("Key pressed: " + key);
-        moveLeft(); 
-    }
-    if(right.includes(key)) {
-        console.log("Key pressed: " + key);
-        moveRight(); 
-    }
-    if(clockwise.includes(key)) {
-        console.log("Key pressed: " + key);
-        rotateClockwise(); 
-    }
-    if(counterclockwise.includes(key)){
-        console.log("Key pressed: " + key);
-        rotateCounterclockwise(); 
-    }
-    if(Hardrop.includes(key)) {
-        console.log("Key pressed: " + key);
-       // hardrop(); 
-    }
-  
-  };
   //Game logic
 function gameLogic(){
     completeRow();
@@ -378,15 +337,67 @@ function gameLogic(){
          renderPiece();
     } 
     moveDown();
+    // Adjust speed based on game level
+    switch (gameLevel) {
+        case 1:
+        speed = 500;
+        break;
+        case 2:
+        speed = 400;
+        break;
+        case 3:
+        speed = 300;
+        break;
+        case 4:
+        speed = 200;
+        break;
+        case 5:
+        speed = 100;
+        break;
+        default:
+        speed = 500;
+        break;
+    }
    
 }
-//clearInterval(intervalid);
+let intervalid
+//Function to start the Game
 function start(){ 
-    let intervalid = setInterval(gameLogic, speed);
+    intervalid = setInterval(gameLogic, speed);
+    console.log("speed: ",  speed);
+    //DEtecting pressed key
     document.onkeydown = function(event) {
         key = event.key
-        if(hold.includes(key)){
-               clearInterval(intervalid);
+        console.log("Key pressed: " + key);
+        if((event.shiftKey && (key == 'C' || key == 'C')) || hold.includes(key)) {
+            console.log("Key pressed: " + key);
+            clearInterval(intervalid);
+        }
+        if(down.includes(key)) {
+            console.log("Key pressed: " + key);
+            moveDown(); 
+        }
+        if(left.includes(key)) {
+            console.log("Key pressed: " + key);
+            moveLeft(); 
+        }
+        if(right.includes(key)) {
+            console.log("Key pressed: " + key);
+            moveRight(); 
+        }
+        if(clockwise.includes(key)) {
+            console.log("Key pressed: " + key);
+            rotateClockwise(); 
+        }
+        if(event.ctrlKey && counterclockwise.includes(key) || counterclockwise.includes(key)){
+            console.log("Key pressed: " + key);
+            rotateCounterclockwise(); 
+        }
+        if(Hardrop.includes(key)) {
+            console.log("Key pressed: " + key);
+            hardDrop();
+            clearInterval(intervalid);
+            
         }
     }
 }
