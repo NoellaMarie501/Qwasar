@@ -18,4 +18,6 @@
             - Models folder : contains the models or tables of our database
             - Repository folder : contains methods that save, update, delete and fetch data from our database
             - export_classes file : to export our various repository classes and methods as a module
+        - Server folder : contains the various file for the running of our sever
+        
     - Web Folder

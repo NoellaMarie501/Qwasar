@@ -1,32 +1,52 @@
 const express  = require('express');
 const app = express();
-const ProjectService = require('../services/projects.service')
+const ProjectService = require('../services/projects.service');
+const ProjectRepository = require('../../Database/repository/project.repository');
+
+//Getting all projects
+app.get('/all', async function(req, res){
+   
+    const projects = await ProjectRepository.allProjects();
+   
+    res.send(projects);
+});
+
+//getting a project with id
+app.get('/:id', async function(req, res){
+    let id = req.params.id
+  
+    const project = await ProjectService.GetProject(id)
+    res.send(project);
+}); 
 
 
-// app.get('/Projects:id', async function(req, res){
-//     let id = req.params.id
-//     let Project = await ProjectService.createProject()
-//     res.send("hello world!");
-// }); 
+//Posting or creating a project
 app.post('/new_project', async function(req, res){
     let name = req.body.name
     let description = req.body.description
-    
-    
-    let Project = await ProjectService.createProject(name, description)
-    res.send(Project);
+
+    const Project = await ProjectService.createProject(name, description)
+    res.status(200).send(Project);
 }); 
 
-// app.get('/Projects:id', function(req, res){
-//     let id = req.params.id
+//updating a project
+app.put('/update:id', async function(req, res){
+    let id = req.params.id
+    let options = req.body
+    
+    const project = await ProjectService.UpdateProject(id, options);
+    res.send(project);
+}); 
 
-//     res.send("hello world!");
-// }); 
-// app.get('/Projects:id', function(req, res){
-//     let id = req.params.id
-
-//     res.send("hello world!");
-// }); 
+//deleting a project
+app.delete('/delete:id', async function(req, res){
+    let id = req.params.id
+    const project = await ProjectService.DeleteProject(id);
+    if(project)
+        res.status(200).send("deleted project successfully!!");
+    else
+     res.status(404).send("no project found nor deleted");
+});
 
 
 module.exports = app;
