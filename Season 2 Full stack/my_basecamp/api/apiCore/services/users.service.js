@@ -1,15 +1,22 @@
 const { UserRepository } = require("../../Database/export_classes");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const secret = "My BaseCamp"
 
 class UserService{
 
     //Create new user
     static async createUser(username, password, firstname, lastname, email){
       const user = await UserRepository.findUserByEmail(email);
-      if(!user){
+      if(user){
         return "User Already Exists"
       }
       else{
-        const newuser = await UserRepository.CreateUser(username, password, firstname, lastname, email)
+        
+        const salt = await bcrypt.genSalt(10);
+        let hashedPassword = await bcrypt.hash(password, salt);
+        //console.log(hashedPassword, salt);
+        const newuser = await UserRepository.CreateUser(username, hashedPassword, firstname, lastname, email)
        return newuser;
       }
        
@@ -57,7 +64,7 @@ class UserService{
       if(!user) {
         return null;
       }
-      // console.log("project",projects)
+    
       return user;
   
     }
@@ -65,12 +72,27 @@ class UserService{
     //Sign in
     static async SignIn(email, password) {
 
+  
       const user = await UserRepository.findUserByEmail(email);
 
+
       if(!user) {
-        return "Wrong Cridentials"
+        return "Wrong Email or password"
       }
+     
+      let matched = bcrypt.compare(password, user.password);
+
+      if(!matched){
+        return "Wrong Email or password"
+      }
+      //Generate a token for the user loging in using user id
+      var token = jwt.sign({ id: user.id }, secret, {
+        expiresIn: 8640 // 24 hours
+      });
       
+      user.dataValues.token = token;
+
+      return user;
 
     }
     

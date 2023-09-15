@@ -33,12 +33,10 @@ class UserRepository {
       }
     });
     
-    if(user) {
-      return null;
-    }
     return user;
 
   }
+  //updating user using email
   static async updateUser(id, options){
         //checking if user exist first before updating
         const user = await this.findUserById(id);
@@ -65,7 +63,7 @@ class UserRepository {
       return allUsers;
   }
 
-  //deleting a project with id
+  //deleting a User with id
   static async deleteUser(id){
     const user = await db.users.findByPk(id);
     if(!user){

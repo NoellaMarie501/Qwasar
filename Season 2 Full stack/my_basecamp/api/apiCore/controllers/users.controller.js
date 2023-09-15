@@ -9,6 +9,16 @@ app.get('/all', async function(req, res){
     res.send(users);
 }); 
 
+//User Signin
+app.get('/signin', async function(req, res){
+    let email = req.body.email;
+    let password = req.body.password;
+    console.log("password", password);
+    const user = await UserService.SignIn(email, password);
+    //console.log(user)
+    res.send(user);
+}); 
+
 //getting a user with id
 app.get('/:id', async function(req, res){
     let id = req.params.id
@@ -27,7 +37,7 @@ app.post('/register', async function(req, res){
     let user = await UserService.createUser(username, password, firstname, lastname, email)
     res.send(user);
 }); 
-
+//Updating a user
 app.put('/update:id', async function(req, res){
     let id = req.params.id
     let options = req.body
@@ -37,7 +47,7 @@ app.put('/update:id', async function(req, res){
     res.send(user);
 }); 
 
-//deleting a project
+//deleting a User
 app.delete('/delete:id', async function(req, res){
     let id = req.params.id
     const user = await UserService.DeleteUser(id);
@@ -46,6 +56,7 @@ app.delete('/delete:id', async function(req, res){
     else 
         res.status(404).send("No user found nor deleted");
 }); 
+
 
 
 module.exports = app;

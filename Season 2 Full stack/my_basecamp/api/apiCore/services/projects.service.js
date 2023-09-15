@@ -14,9 +14,9 @@ class ProjectService{
         
     const project = await ProjectRepository.updateProject(id, options);
     if(!project) {
-      return "user not found";
+      return "Project not found";
     }
-      //console.log("service user", user);
+     
     return project;
   }
 
