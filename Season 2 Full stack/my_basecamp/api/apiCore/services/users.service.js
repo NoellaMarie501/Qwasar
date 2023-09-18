@@ -86,9 +86,7 @@ class UserService{
         return "Wrong Email or password"
       }
       //Generate a token for the user loging in using user id
-      var token = jwt.sign({ id: user.id }, secret, {
-        expiresIn: 8640 // 24 hours
-      });
+      var token = jwt.sign({ id: user.id }, secret);
       
       user.dataValues.token = token;
 

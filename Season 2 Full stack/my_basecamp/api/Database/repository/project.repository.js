@@ -39,6 +39,7 @@ class ProjectRepository {
                   where: { id : project.id}
         });
        
+        
         //getting back the updated Project to be sure it was updated
         const updatedProject = await this.findProjectById(project.id);
   

@@ -3,7 +3,7 @@
 # Descrition
 * This is a project meant to facilitate project management amoungst a team
 * The Main functionalities are:
-    - A user should be able to register
+    - A user should be able to Register
     - A user should be able to perform CRUD on a project
     - A user can be added, deleted edited or viewed 
     - User should have a role either a simple user or a user and an admin at the same time
