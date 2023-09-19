@@ -1,16 +1,14 @@
 import './App.css';
-//import { Route } from 'react-router-dom';
-import React, {useState} from 'react';
-import SignIn  from './views/auth/signin';
-import  Register from './views/auth/register';
-import IndexPage from './views/index';
-import UserPage from './views/index/users';
+import { BrowserRouter as Router } from 'react-router-dom';
+// import SignIn  from './views/auth/signin';
+// import  Register from './views/auth/register';
+import Routers from './routes/router';
 
 function App() {
-  const [currentForm, setCurrentForm] = useState('signin');
-  const toogleForm = (formName) => {
-    setCurrentForm(formName);
-  }
+  // const [currentForm, setCurrentForm] = useState('signin');
+  // // const toogleForm = (formName) => {
+  //   setCurrentForm(formName);
+  // }
   return (
     <div className="App">
       <header className="App-header">
@@ -18,10 +16,10 @@ function App() {
         <h1>
           Welcome to BaseCamp
         </h1>
-        {currentForm === 'signin' ? <SignIn onformSwitch = {toogleForm}/> : <Register onformSwitch = {toogleForm}/>}
-{/* 
-        <IndexPage />
-        <UserPage /> */}
+        {/* {currentForm === 'signin' ? <SignIn onformSwitch = {toogleForm}/> : <Register onformSwitch = {toogleForm}/>} */}
+        <Router>
+          <Routers  />
+        </Router>
       </header>
     </div>
   );

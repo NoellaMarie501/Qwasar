@@ -36,7 +36,7 @@ class UserService{
     //Get User
     static async GetUser(id) {
         
-      const user = await UserRepository.findUserById(id);
+      const user = await UserRepository.findUserByIdNoPwd(id);
       if(!user) {
         return "user not found"
       }

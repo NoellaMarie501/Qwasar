@@ -23,7 +23,7 @@ app.post('/signin', async function(req, res){
 app.get('/:id', async function(req, res){
     let id = req.params.id
     let user = await UserService.GetUser(id)
-    res.send(user);
+    res.send(user).status(200);
 }); 
 
 //posting or creating a user

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 const IndexPage = () => {
-  const [projects, setProjects] = useState([]);
+const navigate = useNavigate();
+const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -24,8 +27,17 @@ const IndexPage = () => {
 
     fetchProjects();
   }, []);
+
+  const handleLogout = () => {
+    // Clear the token from cookies or local storage
+    Cookies.remove('token');
+    // Redirect the user to the login page
+    navigate('/signin');
+  };
   return (
     <div>
+      <Link className="link-button" to="/users">View users</Link>
+      <button onClick={handleLogout}>Logout</button>
       <table>
         <thead>
           <tr>

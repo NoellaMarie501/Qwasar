@@ -1,26 +1,24 @@
 import React, { useState } from "react"
-import axios from "axios";
-import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { login } from "../../services/users";
 
-export default function SignIn(probs){
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(email);
-        console.log(password);
-        try {
-            const response = await axios.post('http://localhost:3001/users/signin', {email: email, password: password});
-            console.log(response.data.token);
+import { handleChange } from "../../utils/handleChange";
 
-            const { token } = response.data;
+//import { BrowserRouter as Routers, Route, Redirect } from 'react-router-dom';
+//import Routers from "../../routes/router";
 
-            // Save the token in a cookie
-            Cookies.set('token', token, { expires: 0.1 }); // Set the expiration time as per your requirement
-        
-          } catch (error) {
-            console.error(error);
-          }
+
+export default function SignIn(){
+    const navigate = useNavigate();
+    const [form, setForm]  = useState({email: '', password: ''});
+    //const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
+
+    const handleSubmit =  (e) => {
+         e.preventDefault();
+        // console.log(form.email);
+        // console.log(form.password);
+        login({...form, navigate});
     }
 
     return (
@@ -28,12 +26,14 @@ export default function SignIn(probs){
             <form onSubmit={handleSubmit} className="signin-form">
             <h1>Sign In</h1> <br />
             <label htmlFor="email">Email</label>
-            <input value ={email} onChange={ (e) => setEmail(e.target.value) } type = "email" placeholder = "enter email" name = "email"></input><br />
+            <input value ={form.email} onChange={ (e) => handleChange(e,setForm,form)} type = "email" placeholder = "enter email" name = "email"></input><br />
             <label htmlFor="password">Password</label>
-            <input value ={password} onChange={ (e) => setPassword(e.target.value) } type = "text" placeholder = "enter password" name = "password"></input><br /> 
+            <input value ={form.password} onChange={(e) => handleChange(e,setForm,form)} type = "text" placeholder = "enter password" name = "password"></input><br /> 
             <button type = "submit" >Sign In</button><br />
             </form>
-            <button className="link-button" onClick={() => probs.onformSwitch('register')}>Do not have an accout? Register Here</button>
+            {/* <button className="link-button" onClick={() => probs.onformSwitch('register')}>Do not have an accout? Register Here</button> */}
+            <Link className="link-button" to='/register' >Do not have an accout? Register Here</Link>
+        
         </div>
     )
     

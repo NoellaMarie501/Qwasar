@@ -23,6 +23,18 @@ class UserRepository {
       return user;
 
   }
+   //Finding user with id
+   static async findUserByIdNoPwd(id){
+        
+    const user = await db.users.findByPk(id,{
+      attributes: { exclude: ['password'] },
+    });
+    if(!user) {
+      return "User Not found";
+    }
+    return user;
+
+}
   //finding user with email
   static async findUserByEmail(email){
         
@@ -58,7 +70,9 @@ class UserRepository {
   //getting all Users
   static async allUsers(){
     //getting all pojects
-      const allUsers = await db.users.findAll();
+      const allUsers = await db.users.findAll({
+        attributes: { exclude: ['password'] }, // Exclude the 'password' field
+      });
 
       return allUsers;
   }
