@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { register } from "../../services/users";
-import { handleChange } from "../../utils/handleChange";
 import CreateEditFormUser from "../../components/CreateEditUserForm";
+import { getCookie } from "../../utils/getCookie";
 
 export default function Register(props) {
   const [form, setForm] = useState({
@@ -12,6 +11,9 @@ export default function Register(props) {
     lastname: "",
     email: "",
   });
+
+  //getting cookie if user authenticated
+  const cookie = getCookie();
   //const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
 
   return (
@@ -22,9 +24,18 @@ export default function Register(props) {
         form={form}
         setForm={setForm}
       />
-      <Link className="link-button" to="/signin">
-        Already have an accout? Sign In
-      </Link>
+      {/*what to display if user authenticated or not*/}
+      {!cookie ? (
+        <>
+          <Link className="link-button" to="/signin">
+            Already have an accout? Sign In
+          </Link>
+        </>
+      ) : (
+        <Link className="link-button" to="/users">
+          Go back to list
+        </Link>
+      )}
     </div>
   );
 }

@@ -53,7 +53,7 @@ class UserService{
         return "users not found"
       }
 
-        //console.log("service user", user);
+        //console.log("service user", users);
       return users;
     }
 

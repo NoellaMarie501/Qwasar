@@ -1,38 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { deleteUser, getUsers } from '../../services/users';
+
+
 const UserPage = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-
+  //const { id } = useParams();
+  
+  //Using the useeffect method to get all users
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-       // const token = localStorage.getItem('token'); // Retrieve the authentication token from storage
-        const response = await axios.get('http://localhost:3001/users/all', 
-      
-        );
-        console.log(response.data);
-        setUsers(response.data);
-      } catch (error) {
-        console.error('An error occurred while fetching Users:', error);
-      }
+      const response = await getUsers();
+      //console.log("response data :", response.data);
+      setUsers(response.data);
+     // console.log('users:', users);
     };
 
     fetchUsers();
   }, []);
+
+  //function to logout user
   const handleLogout = () => {
     // Clear the token from cookies or local storage
     Cookies.remove('token');
       // Redirect the user to the login page
       navigate('/signin');
-    
   };
+  //function to delete user
+  const handleDelete =  (id) => {
+    try {
+       deleteUser(id);
+      // Redirect to the same page after successful delete
+     
+     
+    } catch (error) {
+      console.error(error);
+    }
+      
+  };
+  
   return (
     <div>
        <Link className="link-button" to="/index">View Projects</Link>
+       <Link to={`/register`}> <button>create new user</button></Link>
        <button onClick={handleLogout}>Logout</button>
       <table>
         <thead>
@@ -76,7 +88,7 @@ const UserPage = () => {
                   <Link to={`/users/${user.id}`}> <button>edit User</button></Link>
                 </td>
                 <td>
-                  <Link to="/index"> <button>delete User</button></Link>
+                  <button onClick={()=> handleDelete(user.id)}>delete User</button>
                 </td>
                 </tr>
 

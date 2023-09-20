@@ -56,7 +56,6 @@ class UserRepository {
           return "User Not found";
         }
 
-       
         //updating user with the options
       await db.users.update(options, {
                 where: { id : user.id}
@@ -73,7 +72,7 @@ class UserRepository {
       const allUsers = await db.users.findAll({
         attributes: { exclude: ['password'] }, // Exclude the 'password' field
       });
-
+      //console.log('users:', allUsers);
       return allUsers;
   }
 

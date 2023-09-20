@@ -13,9 +13,11 @@ export default function Routers(){
         <>
             <Routes>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/index" element={<IndexPage />} />
                 <Route path="/users" element={<UserPage />} />
                 <Route path="/signin" element={<SignIn />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/users/:id" element={<EditUser />} />
+                <Route path="/index" element={<IndexPage />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/users/:id" element={<EditUser />} />
             </Routes>

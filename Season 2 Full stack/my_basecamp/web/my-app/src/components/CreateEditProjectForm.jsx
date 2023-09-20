@@ -1,9 +1,8 @@
 import React from "react";
-import { register, updateUser } from "../services/users";
 import { handleChange } from "../utils/handleChange";
 
 
-const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
+const CreateEditFormProject = ({ title, type, form ,setForm, user_id }) => {
    
 
     const handleSubmit = (e) => {
@@ -11,7 +10,7 @@ const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
         // console.log("from frontend",form.email);
         // console.log(form.password);
         if( type === 'register'){
-          console.log("username, firstname, lastname, email", form.username, form.firstname, form.lastname, form.email)
+          console.log("name, description", form.name, form.description)
              register({ ...form });
         }
         else if( type === 'edit'){
@@ -86,4 +85,4 @@ const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
   );
 };
 
-export default CreateEditFormUser;
+export default CreateEditFormProject;

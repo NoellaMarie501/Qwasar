@@ -14,7 +14,6 @@ app.get('/all', async function(req, res){
 //getting a project with id
 app.get('/:id', async function(req, res){
     let id = req.params.id
-  
     const project = await ProjectService.GetProject(id)
     res.send(project);
 }); 
@@ -33,7 +32,6 @@ app.post('/new_project', async function(req, res){
 app.put('/update:id', async function(req, res){
     let id = req.params.id
     let options = req.body
-    
     const project = await ProjectService.UpdateProject(id, options);
     res.send(project);
 }); 

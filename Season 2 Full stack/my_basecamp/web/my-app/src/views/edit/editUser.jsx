@@ -4,6 +4,7 @@ import CreateEditFormUser from "../../components/CreateEditUserForm";
 import { getUser } from "../../services/users";
 
 export default function EditUser(props) {
+  //form that will hold fields with setter
   const [form, setForm] = useState({
     username: "",
     firstname: "",
@@ -11,6 +12,7 @@ export default function EditUser(props) {
     email: "",
   });
 
+  //getting id from parameters
   const { id } = useParams();
   // const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
 
@@ -28,6 +30,7 @@ export default function EditUser(props) {
         type="edit"
         form={form}
         setForm={setForm}
+        user_id={id}
       />
       <Link className="link-button" to="/users">
         Go back to list

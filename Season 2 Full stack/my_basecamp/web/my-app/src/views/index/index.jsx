@@ -1,32 +1,33 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { deleteProject, getProjects } from '../../services/project';
 const IndexPage = () => {
 const navigate = useNavigate();
 const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
-      try {
-       // const token = localStorage.getItem('token'); // Retrieve the authentication token from storage
-        const response = await axios.get('http://localhost:3001/projects/all', 
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // }
-        );
-        console.log(response.data);
-        setProjects(response.data);
-      } catch (error) {
-        console.error('An error occurred while fetching projects:', error);
-      }
+      const response = await getProjects()
+      //console.log("response data :", response.data);
+      setProjects(response.data);
     };
 
     fetchProjects();
   }, []);
+
+  const handleDelete =  (id) => {
+    try {
+       deleteProject(id);
+      // Redirect to the same page after successful delete
+     
+     
+    } catch (error) {
+      console.error(error);
+    }
+      
+  };
 
   const handleLogout = () => {
     // Clear the token from cookies or local storage
@@ -37,6 +38,7 @@ const [projects, setProjects] = useState([]);
   return (
     <div>
       <Link className="link-button" to="/users">View users</Link>
+      <Link to={`/register`}> <button>create new user</button></Link>
       <button onClick={handleLogout}>Logout</button>
       <table>
         <thead>
@@ -46,6 +48,7 @@ const [projects, setProjects] = useState([]);
             <th>Description</th>
             <th>Created At</th>
             <th>Updated At</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +69,14 @@ const [projects, setProjects] = useState([]);
                 <td>
                     {project.updatedAt}
                 </td>
+                <tr>
+                <td>
+                  <Link to={`/users/${project.id}`}> <button>edit project</button></Link>
+                </td>
+                <td>
+                  <button onClick={()=> handleDelete(project.id)}>delete Project</button>
+                </td>
+                </tr>
             </tr>
         ))}
          
