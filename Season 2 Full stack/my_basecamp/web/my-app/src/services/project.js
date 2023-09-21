@@ -16,7 +16,7 @@ export const getProjects = async () =>{
 export const getProject = async (project_id) => {
   try {
     const response = await fetchUtil.get(`projects/${project_id}`);
-    return response.json();
+    return response;
   } catch (e) {
     console.log(e);
   }
@@ -26,6 +26,7 @@ export const deleteProject = async (project_id) => {
    
   try {
     const response = await fetchUtil.delete(`projects/delete${project_id}`);
+    return response.data;
   } catch (e) {
     console.log(e);
   }
@@ -45,7 +46,7 @@ export const updateProject = async (project_id,{name, description}) => {
 
 export const createProject = async ({name, description}) => {
   try {
-      const response =  await fetchUtil.post('projects/register',{name,description});
+      const response =  await fetchUtil.post('projects/new_project',{name,description});
        console.log(response.data);
       // return response.data;
     } catch (error) {

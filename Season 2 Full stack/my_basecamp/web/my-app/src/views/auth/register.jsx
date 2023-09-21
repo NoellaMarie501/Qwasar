@@ -14,12 +14,13 @@ export default function Register(props) {
 
   //getting cookie if user authenticated
   const cookie = getCookie();
+  //console.log(cookie);
   //const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
 
   return (
-    <div className="auth">
+    <div className="forms">
       <CreateEditFormUser
-        title={"register"}
+        title={"Register User"}
         type="register"
         form={form}
         setForm={setForm}

@@ -2,9 +2,9 @@ const db = require("../models/connection");
 class ProjectRepository {
 
     //cresting new project
-    static async createProject(name, description) {
-       
-        const project =  db.projects.create({name, description});
+    static async createProject(name, description, userId) {
+       console.log("userid", userId);
+        const project =  db.projects.create({name, description, UserId: userId});
         if(!project) {
             console.log("REPOSITORY no Project");
         }

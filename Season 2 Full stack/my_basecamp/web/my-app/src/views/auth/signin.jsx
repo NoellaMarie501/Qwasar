@@ -22,7 +22,7 @@ export default function SignIn(){
     }
 
     return (
-        <div className="auth">
+        <div className="forms">
             <form onSubmit={handleSubmit} className="signin-form">
             {isAuthorized && <p>{isAuthorized}</p>}
             <h1>Sign In</h1> <br />

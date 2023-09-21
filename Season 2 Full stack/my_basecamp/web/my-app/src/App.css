@@ -8,13 +8,13 @@
   background-image: linear-gradient(79deg, #211a2e, #eee460 48%, #e95adf);
 }
 
-.auth, .signin-form, .register-form {
+.forms, .signin-form, .register-form {
   display: flex;
   flex-direction: column;
 }
 
 @media screen and (min-width: 600px) {
-  .auth {
+  .forms {
     padding: 5rem;
     border: 1px solid white;
     border-radius: 10px;
@@ -27,12 +27,19 @@ label {
   padding: 0.25rem 0;
 }
 
-input {
+input, textarea, select {
   margin: 0.5rem 0;
   padding: 1rem;
   border: none;
   border-radius: 10px;
 }
+/* textarea{
+    margin: 0.5rem 0;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+ 
+} */
 
 button {
   border: none;

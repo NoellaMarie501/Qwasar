@@ -1,3 +1,5 @@
+
+
 module.exports = (sequelize, DataTypes) => {
     const projects = sequelize.define("Projects",{
         id : {
@@ -14,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
         }
     });
+  
     return projects;
 };
 

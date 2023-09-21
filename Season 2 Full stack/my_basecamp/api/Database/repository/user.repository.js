@@ -37,14 +37,14 @@ class UserRepository {
 }
   //finding user with email
   static async findUserByEmail(email){
-        
+       
     const user = await db.users.findOne({
       where: 
       {
         email: email
       }
     });
-    
+    //console.log(user);
     return user;
 
   }

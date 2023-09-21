@@ -7,6 +7,7 @@ export default function EditUser(props) {
   //form that will hold fields with setter
   const [form, setForm] = useState({
     username: "",
+    role: "",
     firstname: "",
     lastname: "",
     email: "",
@@ -24,7 +25,7 @@ export default function EditUser(props) {
   }, [id]);
  
   return (
-    <div className="auth">
+    <div className="forms">
       <CreateEditFormUser
         title={"edit"}
         type="edit"

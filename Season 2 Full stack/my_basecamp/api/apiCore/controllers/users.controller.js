@@ -1,9 +1,11 @@
 const express  = require('express');
 const app = express();
-const UserService = require('../services/users.service')
+const UserService = require('../services/users.service');
+const {isAdmin} = require('../middleware/control');
+
 
 //getting all users
-app.get('/all', async function(req, res){
+app.get('/all',  async function(req, res){
     //console.log('users:', users);
     let users = await UserService.AllUsers();
     
@@ -21,7 +23,7 @@ app.post('/signin', async function(req, res){
 }); 
 
 //getting a user with id
-app.get('/:id', async function(req, res){
+app.get('/:id' , async function(req, res){
     
     let id = req.params.id
     let user = await UserService.GetUser(id)

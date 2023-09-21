@@ -1,7 +1,7 @@
 const { UserRepository } = require("../../Database/export_classes");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const secret = "My BaseCamp"
+const secret = require("../../constants");
 
 class UserService{
 
@@ -12,7 +12,7 @@ class UserService{
         return "User Already Exists"
       }
       else{
-        
+      
         const salt = await bcrypt.genSalt(10);
         let hashedPassword = await bcrypt.hash(password, salt);
         //console.log(hashedPassword, salt);
@@ -86,7 +86,7 @@ class UserService{
         return "Wrong Email or password"
       }
       //Generate a token for the user loging in using user id
-      var token = jwt.sign({ id: user.id }, secret);
+      var token = jwt.sign({ id: user.id, role: user.role }, secret);
       
       user.dataValues.token = token;
 

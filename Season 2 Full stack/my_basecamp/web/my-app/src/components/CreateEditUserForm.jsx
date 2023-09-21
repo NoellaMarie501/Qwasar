@@ -1,29 +1,32 @@
 import React from "react";
 import { register, updateUser } from "../services/users";
 import { handleChange } from "../utils/handleChange";
+import { useState } from "react";
+import { ROLES } from "../constants/config";
+import { getCookie } from "../utils/getCookie";
 
-
-const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
-   
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // console.log("from frontend",form.email);
-        // console.log(form.password);
-        if( type === 'register'){
-          console.log("username, firstname, lastname, email", form.username, form.firstname, form.lastname, form.email)
-             register({ ...form });
-        }
-        else if( type === 'edit'){
-          
-            updateUser(user_id,{ ...form });
-        }
-       
-        
-      };
+const CreateEditFormUser = ({ title, type, form, setForm, user_id }) => {
+const cookie = getCookie('token');
+//console.log("cookie", cookie.length);
+//console.log("type",type)
+  const [created, setIsCreated] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // console.log("from frontend",form.email);
+    // console.log(form.password);
+    if (type === "Register User") {
+      //console.log("username, firstname, lastname, email", form.username, form.firstname, form.lastname, form.email)
+      register({ ...form });
+    } else if (type === "edit") {
+      updateUser(user_id, { ...form });
+      
+    }
+    setIsCreated("Saved Successfully!!");
+  };
   return (
     <>
       <form onSubmit={handleSubmit} className="register-form">
+        {created && <p>{created}</p>}
         <h1>{title}</h1>
         <br />
         <label htmlFor="username">Username: </label>
@@ -35,7 +38,7 @@ const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
           name="username"
         ></input>
         <br />
-        {(type === "register") && (
+        {type === "register" && (
           <>
             <label htmlFor="password">Password: </label>
             <input
@@ -48,6 +51,26 @@ const CreateEditFormUser = ({ title, type, form ,setForm, user_id }) => {
             ></input>
           </>
         )}
+        {((type === "register" && cookie) ||
+          (type === "edit")) && (
+            
+            <>
+              <label htmlFor="role">Role: </label>
+              <select
+                value={form.role}
+                onChange={(e) => handleChange(e, setForm, form)}
+                type="text"
+                name="role"
+                required
+              >
+                {ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
         <br />
         <label htmlFor="firstname">First Name: </label>
         <input

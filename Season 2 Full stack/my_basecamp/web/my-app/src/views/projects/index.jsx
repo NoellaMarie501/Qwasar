@@ -3,23 +3,32 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { deleteProject, getProjects } from '../../services/project';
+import { getUser } from '../../services/users';
+
 const IndexPage = () => {
 const navigate = useNavigate();
 const [projects, setProjects] = useState([]);
-
+const [deleted, setIsDeleted] = useState(false);
   useEffect(() => {
     const fetchProjects = async () => {
-      const response = await getProjects()
-      //console.log("response data :", response.data);
-      setProjects(response.data);
+      const response = await getProjects();
+      const projectsWithUser = await Promise.all(
+        response.data.map(async (project) => {
+          const user = await getUser(project.UserId);
+          return { ...project, user };
+        })
+      );
+      setProjects(projectsWithUser);
     };
-
     fetchProjects();
   }, []);
-
-  const handleDelete =  (id) => {
+  //const username =  getUser(projects).username;
+  //setUser(getUser(projects.UserId).firstname);
+  const handleDelete = async (id) => {
     try {
-       deleteProject(id);
+       const response = await deleteProject(id);
+       console.log(response);
+      setIsDeleted(response);
       // Redirect to the same page after successful delete
      
      
@@ -37,8 +46,9 @@ const [projects, setProjects] = useState([]);
   };
   return (
     <div>
+      {deleted && <p>{deleted}</p>}
       <Link className="link-button" to="/users">View users</Link>
-      <Link to={`/register`}> <button>create new user</button></Link>
+      <Link to={`/createProject`}> <button>create new project</button></Link>
       <button onClick={handleLogout}>Logout</button>
       <table>
         <thead>
@@ -46,14 +56,15 @@ const [projects, setProjects] = useState([]);
             <th>id</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Created By</th>
             <th>Created At</th>
             <th>Updated At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-        {projects.map((project) => (
-            <tr>
+        {projects.map( (project) => (
+            <tr key={project.id}>
                 <td>
                     {project.id}
                 </td>
@@ -64,6 +75,9 @@ const [projects, setProjects] = useState([]);
                     {project.description}
                 </td>
                 <td>
+                    {project.user.firstname}
+                </td>
+                <td>
                     {project.createdAt}
                 </td>
                 <td>
@@ -71,7 +85,7 @@ const [projects, setProjects] = useState([]);
                 </td>
                 <tr>
                 <td>
-                  <Link to={`/users/${project.id}`}> <button>edit project</button></Link>
+                  <Link to={`/projects/${project.id}`}> <button>edit project</button></Link>
                 </td>
                 <td>
                   <button onClick={()=> handleDelete(project.id)}>delete Project</button>

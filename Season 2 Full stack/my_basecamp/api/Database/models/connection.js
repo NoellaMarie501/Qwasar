@@ -10,6 +10,8 @@ const sequelize = new Sequelize(
         dialect: "mysql"
     }
 );
+
+
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 //calling the model functions to execute table creation
@@ -18,8 +20,10 @@ db.projects = require('./project.model')(sequelize,DataTypes);
 //console.log("users", db.users);
 
 
-//table relations
-//db.projects.belongsTo(db.users, {foreignKey: 'user_id'});
+//relations
+db.users.hasMany(db.projects);
+db.projects.belongsTo(db.users);
+
 
 
 
