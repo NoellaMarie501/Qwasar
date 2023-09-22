@@ -4,24 +4,38 @@ import { handleChange } from "../utils/handleChange";
 import { useState } from "react";
 import { ROLES } from "../constants/config";
 import { getCookie } from "../utils/getCookie";
+import { useNavigate } from "react-router-dom";
 
 const CreateEditFormUser = ({ title, type, form, setForm, user_id }) => {
-const cookie = getCookie('token');
-//console.log("cookie", cookie.length);
-//console.log("type",type)
+  const navigate = useNavigate();
+  const cookie = getCookie("token");
+  //console.log("cookie", cookie.length);
+  //console.log("type",type)
   const [created, setIsCreated] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log("from frontend",form.email);
     // console.log(form.password);
-    if (type === "Register User") {
-      //console.log("username, firstname, lastname, email", form.username, form.firstname, form.lastname, form.email)
-      register({ ...form });
-    } else if (type === "edit") {
-      updateUser(user_id, { ...form });
-      
+    console.log("type", type);
+    try {
+      if (type === "register") {
+        // console.log(
+        //   "username, firstname, lastname, email",
+        //   form.username,
+        //   form.firstname,
+        //   form.lastname,
+        //   form.email
+        // );
+        register({ ...form });
+      } else if (type === "edit") {
+        updateUser(user_id, { ...form });
+      }
+      setIsCreated("Saved Successfully!!");
+      navigate('/users')
+
+    } catch (e) {
+      setIsCreated(e.message);
     }
-    setIsCreated("Saved Successfully!!");
   };
   return (
     <>
@@ -51,26 +65,24 @@ const cookie = getCookie('token');
             ></input>
           </>
         )}
-        {((type === "register" && cookie) ||
-          (type === "edit")) && (
-            
-            <>
-              <label htmlFor="role">Role: </label>
-              <select
-                value={form.role}
-                onChange={(e) => handleChange(e, setForm, form)}
-                type="text"
-                name="role"
-                required
-              >
-                {ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
+        {((type === "register" && cookie) || type === "edit") && (
+          <>
+            <label htmlFor="role">Role: </label>
+            <select
+              value={form.role}
+              onChange={(e) => handleChange(e, setForm, form)}
+              type="text"
+              name="role"
+              required
+            >
+              {ROLES.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
         <br />
         <label htmlFor="firstname">First Name: </label>
         <input

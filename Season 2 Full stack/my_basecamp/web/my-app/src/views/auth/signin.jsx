@@ -8,7 +8,7 @@ import { handleChange } from "../../utils/handleChange";
 export default function SignIn(){
     const navigate = useNavigate();
     const [form, setForm]  = useState({email: '', password: ''});//form for email and password with setter
-    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [message, setMessage] = useState('');
    
     //Submit method for when button is cliccked
     const handleSubmit = async (e) => {
@@ -16,15 +16,15 @@ export default function SignIn(){
         // console.log(form.email);
         // console.log(form.password);
         const response = await login({...form, navigate});
-        
+        console.log("signin jsx", response)
         //set the response if not authorized
-        setIsAuthorized(response);
+        setMessage(response?.message);
     }
 
     return (
         <div className="forms">
             <form onSubmit={handleSubmit} className="signin-form">
-            {isAuthorized && <p>{isAuthorized}</p>}
+            {message && <p>{message}</p>}
             <h1>Sign In</h1> <br />
             <label htmlFor="email">Email</label>
             <input value ={form.email} onChange={ (e) => handleChange(e,setForm,form)} type = "email" placeholder = "enter email" name = "email" required></input><br />

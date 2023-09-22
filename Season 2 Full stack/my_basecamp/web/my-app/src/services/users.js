@@ -6,11 +6,11 @@ import { getCookie } from "../utils/getCookie";
 export const getUsers = async () => {
   try {
     const token = getCookie('token');
+    //console.log("token",token);
     const response = await fetchUtil.get(`users/all`,{headers: {
       'Authorization': `Bearer ${token}`
     }});
-    //console.log("response users.js:", response.data);
-    
+   // console.log("response users.js:", response.data);
     return response;
   } catch (error) {
     console.error("An error occurred while fetching Users:", error);
@@ -28,6 +28,7 @@ export const getUser = async (user_id) => {
 export const deleteUser = async (user_id) => {
   try {
     const response = await fetchUtil.delete(`users/delete${user_id}`);
+    return response.data;
   } catch (e) {
     console.log(e);
   }
@@ -59,14 +60,16 @@ export const login = async ({ email, password, navigate }) => {
       email: email,
       password: password,
     });
-    //console.log(response.data);
-
-    const { token } = response.data;
+    console.log("responce.data :", response.data.data);
+    
+    const { token } = response.data.data;
 
     if (token) {
+      console.log(token);
       // Save the token in a cookie
       Cookies.set("token", token, { expires: 0.01 }); // Set the expiration time as per your requirement
       navigate("/index");
+      return response.data
     } else {
       return response.data;
     }

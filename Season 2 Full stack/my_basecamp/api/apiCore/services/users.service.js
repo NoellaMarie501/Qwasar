@@ -1,15 +1,14 @@
 const { UserRepository } = require("../../Database/export_classes");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const secret = require("../../constants");
-
+const {secret, HTTP_STATUS} = require("../../constants");
 class UserService{
 
     //Create new user
     static async createUser(username, password, firstname, lastname, email){
       const user = await UserRepository.findUserByEmail(email);
       if(user){
-        return "User Already Exists"
+        return {message : "User Already Exists", status : HTTP_STATUS.BAD_REQUEST}
       }
       else{
       
@@ -17,7 +16,7 @@ class UserService{
         let hashedPassword = await bcrypt.hash(password, salt);
         //console.log(hashedPassword, salt);
         const newuser = await UserRepository.CreateUser(username, hashedPassword, firstname, lastname, email)
-       return newuser;
+       return {data :newuser, status : HTTP_STATUS.OK};
       }
        
     }
@@ -77,20 +76,20 @@ class UserService{
 
 
       if(!user) {
-        return "Wrong Email or password"
+        return {message :"Wrong Email or password", status : HTTP_STATUS.BAD_REQUEST}
       }
      
       let matched = bcrypt.compare(password, user.password);
 
       if(!matched){
-        return "Wrong Email or password"
+        return {message :"Wrong Email or password", status : HTTP_STATUS.BAD_REQUEST}
       }
       //Generate a token for the user loging in using user id
       var token = jwt.sign({ id: user.id, role: user.role }, secret);
       
       user.dataValues.token = token;
 
-      return user;
+      return {data :user, status : HTTP_STATUS.OK};
 
     }
     

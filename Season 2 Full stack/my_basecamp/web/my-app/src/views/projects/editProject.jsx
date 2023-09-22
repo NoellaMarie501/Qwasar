@@ -17,7 +17,7 @@ export default function EditProject(props) {
   useEffect(() => {
     const project = getProject(id).then((project) => {
       console.log("user: ", project);
-      setForm(project);
+      setForm(project.data);
     });
   }, [id]);
  

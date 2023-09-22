@@ -1,51 +1,68 @@
-import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { deleteUser, getUsers } from '../../services/users';
-
+import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { deleteUser, getUsers } from "../../services/users";
+import { getLoggedInUser } from "../../utils/getLoggedInUser";
+import { findPermission } from "../../utils/findPermission";
 
 const UserPage = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  //const { id } = useParams();
-  
-  //Using the useeffect method to get all users
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await getUsers();
-      //console.log("response data :", response.data);
-      setUsers(response.data);
-     // console.log('users:', users);
-    };
+  const [rerender, setRerender] = useState(true);
 
+  //const { id } = useParams();
+
+  //Using the useeffect method to get all users
+  const fetchUsers = async () => {
+    const response = await getUsers();
+    //console.log("response data :", response.data);
+    setUsers(response.data);
+    setRerender(!rerender);
+    // console.log('users:', users);
+  };
+  useEffect(() => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {}, [rerender]);
   //function to logout user
   const handleLogout = () => {
     // Clear the token from cookies or local storage
-    Cookies.remove('token');
-      // Redirect the user to the login page
-      navigate('/signin');
+    Cookies.remove("token");
+    // Redirect the user to the login page
+    navigate("/signin");
   };
+
+  //getting logged in user's role
+  const loggedInRole = getLoggedInUser().role;
+  const loggedInId = getLoggedInUser().id;
+  const deletePermissions = ["admin"];
+  const canDeletePermission = findPermission(deletePermissions, loggedInRole);
+
   //function to delete user
-  const handleDelete =  (id) => {
+  const handleDelete = (id) => {
     try {
-       deleteUser(id);
+      const response = deleteUser(id).then((response) => {
+        if (response.toString().includes("successfully")) {
+          fetchUsers();
+        }
+      });
       // Redirect to the same page after successful delete
-     
-     
     } catch (error) {
       console.error(error);
     }
-      
   };
-  
+
   return (
     <div>
-       <Link className="link-button" to="/index">View Projects</Link>
-       <Link to={`/register`}> <button>create new user</button></Link>
-       <button onClick={handleLogout}>Logout</button>
+      <Link className="link-button" to="/index">
+        View Projects
+      </Link>
+      <Link to={`/register`}>
+        {" "}
+        <button>create new user</button>
+      </Link>
+      <button onClick={handleLogout}>Logout</button>
       <table>
         <thead>
           <tr>
@@ -60,41 +77,32 @@ const UserPage = () => {
           </tr>
         </thead>
         <tbody>
-        {users.map((user) => (
+          {users.map((user) => (
             <tr>
+              <td>{user.id}</td>
+              <td>{user.username}</td>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.email}</td>
+              <td>{user.createdAt}</td>
+              <td>{user.updatedAt}</td>
+              <tr>
                 <td>
-                    {user.id}
+                  <Link to={`/users/${user.id}`}>
+                    {" "}
+                    <button disabled={user.id !== loggedInId}>edit User</button>
+                  </Link>
                 </td>
                 <td>
-                    {user.username}
+                  {canDeletePermission && (
+                    <button onClick={() => handleDelete(user.id)}>
+                      delete User
+                    </button>
+                  )}
                 </td>
-                <td>
-                    {user.firstname}
-                </td>
-                <td>
-                    {user.lastname}
-                </td>
-                <td>
-                    {user.email}
-                </td>
-                <td>
-                    {user.createdAt}
-                </td>
-                <td>
-                    {user.updatedAt}
-                </td>
-                <tr>
-                <td>
-                  <Link to={`/users/${user.id}`}> <button>edit User</button></Link>
-                </td>
-                <td>
-                  <button onClick={()=> handleDelete(user.id)}>delete User</button>
-                </td>
-                </tr>
-
+              </tr>
             </tr>
-        ))}
-         
+          ))}
         </tbody>
       </table>
     </div>

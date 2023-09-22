@@ -1,21 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { handleChange } from "../utils/handleChange";
 import { createProject, updateProject } from "../services/project";
 import { useState } from "react";
+import { getLoggedInUser } from "../utils/getLoggedInUser";
+import { useNavigate } from "react-router-dom";
+import { useGetProjects } from "../utils/hooks/useGetProjects";
 
 const CreateEditFormProject = ({ title, type, form, setForm, project_id }) => {
+  const decode = getLoggedInUser();
+  const navigate = useNavigate();
   const [created, setIsCreated] = useState(false);
+  const [rerender, setRerender] = useState(true);
+
+  const { projects } = useGetProjects({ refetch: rerender })
+
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    
     // console.log("from frontend",form.email);
     // console.log(form.password);
     if (type === "createProject") {
+      form.UserId = decode.id;
       //console.log("name, description", form.name, form.description);
-      createProject({ ...form });
+      console.log("form.UserId",form.UserId)
+      createProject({ ...form }).then((response) => {
+        if (response.toString().includes("successfully")) {
+          setRerender(!rerender)
+        }
+      });
     } else if (type === "editProject") {
-      updateProject(project_id, { ...form });
+      updateProject(project_id, { ...form }).then((response) => {
+        if (response.toString().includes("successfully")) {
+          setRerender(!rerender)
+        }
+      });
     }
     setIsCreated("Saved Successfully!!");
+    navigate("/index")
   };
   return (
     <>

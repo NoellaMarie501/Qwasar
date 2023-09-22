@@ -23,8 +23,9 @@ app.get('/:id', async function(req, res){
 app.post('/new_project', async function(req, res){
     let name = req.body.name
     let description = req.body.description
-    let userId = req.body.userId
-    const Project = await ProjectService.createProject(name, description, userId)
+    let UserId = req.body.UserId
+    console.log("req.body",req.body)
+    const Project = await ProjectService.createProject(name, description, UserId)
     res.status(200).send(Project);
 }); 
 

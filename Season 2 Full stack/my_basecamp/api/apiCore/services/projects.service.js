@@ -3,9 +3,9 @@ const { ProjectRepository } = require("../../Database/export_classes");
 class ProjectService{
 
   //Method to create a new project
-  static async createProject(name, description, userId){
+  static async createProject(name, description, UserId){
    
-    const Project = await ProjectRepository.createProject(name, description, userId);
+    const Project = await ProjectRepository.createProject(name, description, UserId);
     return Project;
   }
 

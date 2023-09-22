@@ -1,61 +1,52 @@
 // // auth.js
+const { secret, HTTP_STATUS } = require("../../constants");
+const { responseHandler } = require("../utils/responseHandler");
+const { ROLES } = require("./roles_permissions");
+const jwt = require("jsonwebtoken");
 
-const {ROLES} = require("./roles_permissions");
-
-// // const isAdmin = (req, res, next) => {
-// //     console.log(req)
-// //   if (req.user.role === ROLES.ADMIN) {
-// //     console.log(req.user.role);
-// //     next();
-// //   } else {
-// //     res.status(403).send("Unauthorized");
-// //   }
-// // };
-
-// // const hasPermission = (permission) => (req, res, next) => {
-// //   if (req.user.role === ROLES.ADMIN) {
-// //     next();
-// //   } else if (req.user.role === ROLES.USER && req.user.permissions.includes(permission)) {
-// //     next();
-// //   } else {
-// //     res.status(403).send("Unauthorized");
-// //   }
-// // };
-
-// module.exports = {
-//   isAdmin,
-//   hasPermission,
-// };
-
-// Define roles and their corresponding permissions
-
-  
-  // Middleware function to verify JWT token and extract user's ID and role
-  const verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
-    if (!token) {
-      return res.status(403).send({ message: "No token provided!" });
-    }
-    jwt.verify(token, config.secret, (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ message: "Unauthorized!" });
-      }
-      req.userId = decoded.id;
-      req.userRole = decoded.role;
-      next();
+// Middleware function to verify JWT token and extract user's ID and role
+const verifyToken = (req, res, next) => {
+  //console.log("req",req)
+  let authorization = req.headers.authorization; //.token;
+  console.log("authorization",authorization)
+  //console.log("authorization",authorization);
+  const token = authorization.split(" ")[1];
+  if (!token) {
+    // console.log("Access token none")
+    return responseHandler({
+      res,
+      status: HTTP_STATUS.UNAUTHORIZED,
+      message: "No token provided! User Not authenticated",
     });
-  };
-  
+  }
+  //console.log("token",token);
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+      return responseHandler({
+        res,
+        status: HTTP_STATUS.UNAUTHORIZED,
+        message: "Unauthorized!",
+      });
+    }
+    // console.log("decoded",decoded.id);
+    req.UserId = decoded.id;
+    req.userRole = decoded.role;
+    //console.log("req.UserId req.userRole", req.UserId, req.userRole)
+    next();
+    return { id: decoded.id, role: decoded.role };
+  });
+};
+
 //   // Middleware function to check user's role against required role
-//   const checkRole = (role) => {
-//     return (req, res, next) => {
-//       if (!roles[role].includes(req.userRole)) {
-//         return res.status(403).send({ message: "Forbidden!" });
-//       }
-//       next();
-//     };
-//   };
-  
+const checkRole = (req, res, next) => {
+  const role = verifyToken(req, res, next).role;
+  if (role === ROLES.ADMIN) {
+    next();
+  } else {
+    return res.status(401).send({ message: "Unauthorized!" });
+  }
+};
+
 //   // Example route that requires "admin" role to delete a user
 //   app.delete('/users/:id', verifyToken, checkRole('admin'), async (req, res) => {
 //     try {
@@ -70,5 +61,5 @@ const {ROLES} = require("./roles_permissions");
 //       res.status(500).send({ message: "Internal server error!" });
 //     }
 //   });
-  
 
+module.exports = { verifyToken, checkRole };

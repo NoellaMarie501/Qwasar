@@ -5,10 +5,8 @@ import CreateEditFormProject from "../../components/CreateEditProjectForm";
 export default function CreateProject(props) {
   const [form, setForm] = useState({
     name : "",
-    description: "",
+    description: ""
   });
-
-
 
   //const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
 

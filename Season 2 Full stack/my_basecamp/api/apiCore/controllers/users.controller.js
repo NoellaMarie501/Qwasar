@@ -1,11 +1,12 @@
 const express  = require('express');
 const app = express();
 const UserService = require('../services/users.service');
-const {isAdmin} = require('../middleware/control');
+const {verifyToken, checkRole } = require('../middleware/control');
+const { responseHandler } = require('../utils/responseHandler');
 
 
 //getting all users
-app.get('/all',  async function(req, res){
+app.get('/all', verifyToken,  async function(req, res){
     //console.log('users:', users);
     let users = await UserService.AllUsers();
     
@@ -17,9 +18,9 @@ app.post('/signin', async function(req, res){
     let email = req.body.email;
     let password = req.body.password;
     //console.log("password", password);
-    const user = await UserService.SignIn(email, password);
+    const response = await UserService.SignIn(email, password);
     //console.log(user)
-    res.send(user);
+    responseHandler({...response, res});
 }); 
 
 //getting a user with id
@@ -32,14 +33,10 @@ app.get('/:id' , async function(req, res){
 
 //posting or creating a user
 app.post('/register', async function(req, res){
-    let username = req.body.username
-    let password = req.body.password
-    let firstname = req.body.firstname
-    let lastname = req.body.lastname
-    let email = req.body.email
+    const {username, password, firstname,lastname,email} = req.body
     
     let user = await UserService.createUser(username, password, firstname, lastname, email);
-    //console.log(user);
+    console.log(user);
     res.send(user);
 }); 
 //Updating a user
@@ -54,7 +51,7 @@ app.put('/update:id', async function(req, res){
 }); 
 
 //deleting a User
-app.delete('/delete:id', async function(req, res){
+app.delete('/delete:id',  async function(req, res){
     let id = req.params.id
     // console.log('delete id', id);
     const user = await UserService.DeleteUser(id);

@@ -36,7 +36,7 @@ export const updateProject = async (project_id,{name, description}) => {
   try {
     //console.log(`updating id ${project_id}`);
     const response = await fetchUtil.put(`projects/update${project_id}`, {name,description});
-    //return response.json();
+    return response.data;
   } catch (e) {
     console.log(e);
   }
@@ -44,11 +44,13 @@ export const updateProject = async (project_id,{name, description}) => {
 
 
 
-export const createProject = async ({name, description}) => {
+export const createProject = async ({name, description, UserId}) => {
   try {
-      const response =  await fetchUtil.post('projects/new_project',{name,description});
+    console.log("UserId", UserId);
+      const response =  await fetchUtil.post('projects/new_project',{name, description, UserId});
        console.log(response.data);
-      // return response.data;
+      return response.data;
+
     } catch (error) {
       console.error(error);
     }

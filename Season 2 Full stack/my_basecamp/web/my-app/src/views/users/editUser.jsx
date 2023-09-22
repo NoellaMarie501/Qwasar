@@ -19,7 +19,7 @@ export default function EditUser(props) {
 
   useEffect(() => {
     const user = getUser(id).then((user) => {
-      console.log("user: ", user);
+     // console.log("user: ", user);
       setForm(user);
     });
   }, [id]);
