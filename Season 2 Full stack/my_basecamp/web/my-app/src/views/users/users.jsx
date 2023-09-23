@@ -1,30 +1,23 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteUser, getUsers } from "../../services/users";
+import { deleteUser } from "../../services/users";
 import { getLoggedInUser } from "../../utils/getLoggedInUser";
 import { findPermission } from "../../utils/findPermission";
+import { useUsersContext } from "../../context/users/usersContext";
 
 const UserPage = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [rerender, setRerender] = useState(true);
-
+  const { getUsers, users } = useUsersContext()
   //const { id } = useParams();
 
   //Using the useeffect method to get all users
-  const fetchUsers = async () => {
-    const response = await getUsers();
-    //console.log("response data :", response.data);
-    setUsers(response.data);
-    setRerender(!rerender);
-    // console.log('users:', users);
-  };
+
   useEffect(() => {
-    fetchUsers();
+    getUsers();
   }, []);
 
-  useEffect(() => {}, [rerender]);
+  // useEffect(() => {}, [rerender]);
   //function to logout user
   const handleLogout = () => {
     // Clear the token from cookies or local storage
@@ -44,7 +37,7 @@ const UserPage = () => {
     try {
       const response = deleteUser(id).then((response) => {
         if (response.toString().includes("successfully")) {
-          fetchUsers();
+          getUsers();
         }
       });
       // Redirect to the same page after successful delete
@@ -77,7 +70,7 @@ const UserPage = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users?.map((user) => (
             <tr>
               <td>{user.id}</td>
               <td>{user.username}</td>
