@@ -1,18 +1,20 @@
 import React from "react";
-import { register, updateUser } from "../services/users";
+import { getUsers, register, updateUser } from "../services/users";
 import { handleChange } from "../utils/handleChange";
 import { useState } from "react";
 import { ROLES } from "../constants/config";
 import { getCookie } from "../utils/getCookie";
 import { useNavigate } from "react-router-dom";
+import { useUsersContext } from "../context/users/usersContext";
 
 const CreateEditFormUser = ({ title, type, form, setForm, user_id }) => {
   const navigate = useNavigate();
   const cookie = getCookie("token");
+  const { getUsers } = useUsersContext()
   //console.log("cookie", cookie.length);
   //console.log("type",type)
   const [created, setIsCreated] = useState(false);
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log("from frontend",form.email);
     // console.log(form.password);
@@ -26,12 +28,19 @@ const CreateEditFormUser = ({ title, type, form, setForm, user_id }) => {
         //   form.lastname,
         //   form.email
         // );
-        register({ ...form });
+       const response = await register({ ...form });
+       console.log("response: ", response)
+       if(response.status === 200) {
+        setIsCreated("Saved Successfully!!");
+        getUsers()
+        navigate('/users')
+       }
       } else if (type === "edit") {
         updateUser(user_id, { ...form });
       }
-      setIsCreated("Saved Successfully!!");
-      navigate('/users')
+      // setIsCreated("Saved Successfully!!");
+      // getUsers()
+      // navigate('/users')
 
     } catch (e) {
       setIsCreated(e.message);

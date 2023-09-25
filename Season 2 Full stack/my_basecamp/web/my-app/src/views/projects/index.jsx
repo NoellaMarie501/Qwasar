@@ -1,45 +1,25 @@
-import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteProject, getProjects } from "../../services/project";
-import { getUser } from "../../services/users";
+import { useProjectsContext } from "../../context/projects/projectsContext";
+import { deleteProject } from "../../services/project";
 import { getLoggedInUser } from "../../utils/getLoggedInUser";
-import { useGetProjects } from "../../utils/hooks/useGetProjects";
 
 const IndexPage = () => {
   const navigate = useNavigate();
-  // const [projects, setProjects] = useState([]);
-  const [canDelete, setCanDelete] = useState(false);
   const [deleted, setIsDeleted] = useState(false);
-  const [rerender, setRerender] = useState(true);
 
-  // const fetchProjects = async () => {
-  //   const response = await getProjects();
-  //   const projectsWithUser = await Promise.all(
-  //     response.data.map(async (project) => {
-  //       const user = await getUser(project.UserId);
-  //       return { ...project, user };
-  //     })
-  //   );
-  //   setProjects(projectsWithUser);
-  //   setRerender(!rerender);
-  // };
-  // useEffect(() => {
-  //   fetchProjects();
-  // }, []);
+  const { getProjects, projects } = useProjectsContext()
 
   useEffect(() => {
-    setRerender(!rerender)
-  }, [rerender]);
-
-  const { projects } = useGetProjects({refetch: rerender })
+    getProjects();
+  }, []);
 
   //const username =  getUser(projects).username;
   //setUser(getUser(projects.UserId).firstname);
 
   //retrive the looged in user from token
-  
+
   const loggedInUserId = getLoggedInUser().id;
 
   //Delete function
@@ -51,19 +31,16 @@ const IndexPage = () => {
       try {
         const response = await deleteProject(id).then((response) => {
           if (response.toString().includes("successfully")) {
-            setRerender(!rerender)
+            getProjects()
           }
         });
 
-        console.log(response);
         setIsDeleted(response);
         // Redirect to the same page after successful delete
       } catch (error) {
         console.error(error);
       }
-      setCanDelete(true);
     } else {
-      setCanDelete(false);
       alert("Not allowed only owner can delete project")
     }
   };
@@ -99,7 +76,7 @@ const IndexPage = () => {
           </tr>
         </thead>
         <tbody>
-          {projects.map((project) => (
+          {projects?.map((project) => (
             <tr key={project.id}>
               <td>{project.id}</td>
               <td>{project.name}</td>
@@ -115,8 +92,7 @@ const IndexPage = () => {
                   </Link>
                 </td>
                 <td>
-                  {JSON.stringify({ canDelete })}
-                  <button onClick={() => handleDelete(project.id, loggedInUserId, project.user.id)} disabled={canDelete} >
+                  <button onClick={() => handleDelete(project.id, loggedInUserId, project.user.id)} disabled={loggedInUserId === project.user.id ? false: true} >
                     delete Project
                   </button>
                 </td>

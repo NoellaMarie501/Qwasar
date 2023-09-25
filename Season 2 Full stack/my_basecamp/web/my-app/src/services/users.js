@@ -2,15 +2,16 @@ import Cookies from "js-cookie";
 import fetchUtil from "../utils/hooks/fetchUtils";
 import { getCookie } from "../utils/getCookie";
 
-
 export const getUsers = async () => {
   try {
-    const token = getCookie('token');
+    const token = getCookie("token");
     //console.log("token",token);
-    const response = await fetchUtil.get(`users/all`,{headers: {
-      'Authorization': `Bearer ${token}`
-    }});
-   // console.log("response users.js:", response.data);
+    const response = await fetchUtil.get(`users/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log("response users.js:", response.data);
     return response;
   } catch (error) {
     console.error("An error occurred while fetching Users:", error);
@@ -61,7 +62,7 @@ export const login = async ({ email, password, navigate }) => {
       password: password,
     });
     console.log("responce.data :", response.data.data);
-    
+
     const { token } = response.data.data;
 
     if (token) {
@@ -69,7 +70,7 @@ export const login = async ({ email, password, navigate }) => {
       // Save the token in a cookie
       Cookies.set("token", token, { expires: 0.01 }); // Set the expiration time as per your requirement
       navigate("/index");
-      return response.data
+      return response.data;
     } else {
       return response.data;
     }
@@ -94,7 +95,7 @@ export const register = async ({
       email,
     });
     //console.log(response.data);
-    // return response.data;
+    return response;
   } catch (error) {
     console.error(error);
   }

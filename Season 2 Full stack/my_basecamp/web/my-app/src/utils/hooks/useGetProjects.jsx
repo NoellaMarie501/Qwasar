@@ -14,8 +14,8 @@ export const useGetProjects = ({refetch = false } = {}) => {
           })
         );
         setProjects(projectsWithUser);
+        console.log("projectWithUser: ", projectsWithUser)
       };
-
       useEffect(() => {
         console.log('rerednder: ', refetch)
         fetchProjects();
